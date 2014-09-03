@@ -5,13 +5,11 @@ _ = require 'underscore-plus'
 
 module.exports =
 class Harbour
-  name: '' # Name of this go
-  os: '' # go env's GOOS
+  name: '' # Name of this harbour
   exe: ''
   version: ''
-  gopath: '' # go env's GOPATH
-  goroot: '' # go env's GOROOT
-  gotooldir: '' # go env's GOTOOLDIR
+  hbpath: '' # env's HB_PATH
+  hbroot: '' # env's HB_ROOT
   env: false # Copy of the environment
 
   constructor: (@executable, @pathexpander, options) ->
@@ -43,18 +41,18 @@ class Harbour
     return @pathexpander.expand(result, '')
 
   splitharbourpath: ->
-    result = @buildgopath()
+    result = @buildharbourpath()
     return [] unless result? and result isnt ''
     return result.split(path.delimiter)
 
   hbformat: ->
-    return false unless @goroot? and @goroot isnt ''
-    result = path.join(@goroot, 'bin', 'hbformat' + @exe)
+    return false unless @hbroot? and @hbroot isnt ''
+    result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
     return false unless fs.existsSync(result)
     return fs.realpathSync(result)
 
   format: ->
-    if atom.config.get('harbour-plus.formatWithHarbourImports')? and atom.config.get('harbour-plus.formatWithHarbourImports') then @goimports() else @gofmt()
+    @hbrormat()
 
 
   hbpathOrPathBinItem: (name) ->
