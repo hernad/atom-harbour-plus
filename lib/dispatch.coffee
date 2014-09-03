@@ -62,7 +62,6 @@ class Dispatch
 
     @environmentOverridesConfigurationSubscription = atom.config.observe 'harbour-plus.environmentOverridesConfiguration', => @displayGoInfo(true) if @ready
     @harbourInstallationSubscription = atom.config.observe 'harbour-plus.harbourInstallation', => @detect() if @ready
-    #@updatetoolsCommandSubscription = atom.workspaceView.command 'harbourlang:updatetools', => @gettools(true) if @activated
 
     @subscribe(@environmentOverridesConfigurationSubscription)
     @subscribe(@harbourInstallationSubscription)
@@ -187,7 +186,6 @@ class Dispatch
   handleBufferChanged: (editorView) ->
     return unless @ready and @activated
     return unless @isValidEditorView(editorView)
-    @gocover.resetCoverage()
 
   resetState: (editorView) ->
     @messages = []

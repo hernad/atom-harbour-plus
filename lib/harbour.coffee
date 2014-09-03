@@ -13,21 +13,19 @@ class Harbour
 
   constructor: (@executable, @pathexpander, options) ->
     @name = options.name if options?.name?
-    @os = options.os if options?.os?
     @exe = options.exe if options?.exe?
-
     @version = options.version if options?.version?
     @hbroot = options.hbroot if options?.hbroot?
 
 
   description: ->
-    return @name + ' (@ ' + @goroot + ')'
+    return @name + ' (@ ' + @hbroot + ')'
 
   harbour: ->
+    console.log @executable
     return false unless @executable? and @executable isnt ''
     return false unless fs.existsSync(@executable)
     return fs.realpathSync(@executable)
-
 
   hbformat: ->
     return false unless @hbroot? and @hbroot isnt ''

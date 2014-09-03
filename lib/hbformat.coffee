@@ -47,8 +47,8 @@ class HbFormat
     configArgs = @dispatch.splicersplitter.splitAndSquashToArray(' ', atom.config.get('harbour-plus.hbformatArgs'))
     args = _.union(args, configArgs) if configArgs? and _.size(configArgs) > 0
     args = _.union(args, [buffer.getPath()])
-    go = @dispatch.goexecutable.current()
-    cmd = go.format()
+    harbour = @dispatch.harbourexecutable.current()
+    cmd = harbour.format()
     if cmd is false
       message =
         line: false
