@@ -94,10 +94,10 @@ class Dispatch
 
   detect: =>
     @ready = false
-    @goexecutable.once 'detect-complete', =>
+    @harbourexecutable.once 'detect-complete', =>
       @displayGoInfo(false)
       @emitReady()
-    @goexecutable.detect()
+    @harbourexecutable.detect()
 
   resetAndDisplayMessages: (editorView, msgs) =>
     return unless @isValidEditorView(editorView)
@@ -145,8 +145,8 @@ class Dispatch
 
   triggerPipeline: (editorView, saving) ->
     @dispatching = true
-    go = @goexecutable.current()
-    unless go? and go.executable? and go.executable.trim() isnt ''
+    harbour = @harbourexecutable.current()
+    unless harbour? and harbour.executable? and harbour.executable.trim() isnt ''
       @displayGoInfo(false)
       @dispatching = false
       return
