@@ -31,8 +31,6 @@ class Dispatch
     @harbourexecutable = new HarbourExecutable(@env())
 
     @hbformat = new HbFormat(this)
-
-
     @messagepanel = new MessagePanelView title: '<span class="icon-diff-added"></span> harbour-plus', rawTitle: true unless @messagepanel?
 
     @on 'run-detect', => @detect()
@@ -40,9 +38,7 @@ class Dispatch
     # Reset State If Requested
     hbformatsubscription = @hbformat.on 'reset', (editorView) => @resetState(editorView)
 
-
     @subscribe(hbformatsubscription)
-
 
     @on 'dispatch-complete', (editorView) => @displayMessages(editorView)
     @subscribeToAtomEvents()
@@ -225,7 +221,7 @@ class Dispatch
         unless skip
           if message?.line? and message.line isnt false and message.line >= 0
             marker = buffer.markPosition([message.line - 1, 0], class: 'harbour-plus', invalidate: 'touch')
-            editorView.getEditor().decorateMarker(marker, type: 'gutter', class: 'goplus-' + message.type)
+            editorView.getEditor().decorateMarker(marker, type: 'gutter', class: 'hbplus-' + message.type)
 
   resetPanel: ->
     @messagepanel?.close()
