@@ -1,5 +1,5 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
-'.editor':
+#'.editor':
 #  'ctrl-alt-c': 'harbourlang:gocover'
 #  'ctrl-alt-shift-c': 'harbourlang:cleargocover'
