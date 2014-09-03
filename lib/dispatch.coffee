@@ -142,24 +142,19 @@ class Dispatch
       @dispatching = false
       return
 
-    async.series([
-      (callback) =>
-        @hbformat.formatBuffer(editorView, saving, callback)
-    ], (err, modifymessages) =>
-      @collectMessages(modifymessages)
-      async.parallel([
-      ], (err, checkmessages) =>
-        @collectMessages(checkmessages)
-        @emit 'dispatch-complete', editorView
-      )
-    )
+    #async.series([
+    #  (callback) =>
+    #    @hbformat.formatBuffer(editorView, saving, callback)
+    #], (err, modifymessages) =>
+    #  @collectMessages(modifymessages)
+    #  async.parallel([
+    #  ], (err, checkmessages) =>
+    #    @collectMessages(checkmessages)
+    #    @emit 'dispatch-complete', editorView
+    #    )
+    #)
 
-    async.series([
-      (callback) =>
-        @gocover.runCoverage(editorView, saving, callback)
-    ], (err, modifymessages) =>
-      @emit 'coverage-complete'
-    )
+
 
   handleBufferSave: (editorView, saving) ->
     return unless @ready and @activated
