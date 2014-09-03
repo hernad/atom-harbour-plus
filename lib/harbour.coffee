@@ -8,8 +8,7 @@ class Harbour
   name: '' # Name of this go
   os: '' # go env's GOOS
   exe: ''
-  arch: '' # go env's GOARCH
-  version: '' # The result of 'go version'
+  version: ''
   gopath: '' # go env's GOPATH
   goroot: '' # go env's GOROOT
   gotooldir: '' # go env's GOTOOLDIR
@@ -19,11 +18,11 @@ class Harbour
     @name = options.name if options?.name?
     @os = options.os if options?.os?
     @exe = options.exe if options?.exe?
-    @arch = options.arch if options?.arch?
+
     @version = options.version if options?.version?
-    @gopath = options.gopath if options?.gopath?
-    @goroot = options.goroot if options?.goroot?
-    @gotooldir = options.gotooldir if options?.gotooldir?
+    @hbpath = options.hbpath if options?.hbpath?
+    @hbroot = options.hbroot if options?.hbroot?
+
 
   description: ->
     return @name + ' (@ ' + @goroot + ')'
@@ -35,12 +34,12 @@ class Harbour
 
   buildharbourpath: ->
     result = ''
-    gopathConfig = atom.config.get('harbour-plus.harbourPath')
+    hbpathConfig = atom.config.get('harbour-plus.harbourPath')
     environmentOverridesConfig = atom.config.get('harbour-plus.environmentOverridesConfiguration')? and atom.config.get('harbour-plus.environmentOverridesConfiguration')
     result = @env.HB_PATH if @env.HB_PATH? and @env.HB_PATH isnt ''
-    result = @gopath if @gopath? and @gopath isnt ''
-    result = gopathConfig if not environmentOverridesConfig and gopathConfig? and gopathConfig.trim() isnt ''
-    result = gopathConfig if result is '' and gopathConfig? and gopathConfig.trim() isnt ''
+    result = @hbpath if @hbpath? and @hbpath isnt ''
+    result = hbpathConfig if not environmentOverridesConfig and hbpathConfig? and hbpathConfig.trim() isnt ''
+    result = hbpathConfig if result is '' and hbpathConfig? and hbpathConfig.trim() isnt ''
     return @pathexpander.expand(result, '')
 
   splitharbourpath: ->
@@ -58,11 +57,11 @@ class Harbour
     if atom.config.get('harbour-plus.formatWithHarbourImports')? and atom.config.get('harbour-plus.formatWithHarbourImports') then @goimports() else @gofmt()
 
 
-  gopathOrPathBinItem: (name) ->
+  hbpathOrPathBinItem: (name) ->
     pathresult = false
 
-    gopaths = @splitgopath()
-    for item in gopaths
+    hbpaths = @splitgopath()
+    for item in hbpaths
       result = path.resolve(path.normalize(path.join(item, 'bin', name + @exe)))
       return fs.realpathSync(result) if fs.existsSync(result)
 
@@ -75,11 +74,3 @@ class Harbour
         pathresult = fs.realpathSync(target) if fs.existsSync(target)
 
     return pathresult
-
-  toolsAreMissing: ->
-    return true if @format() is false
-    return true if @golint() is false
-    return true if @vet() is false
-    return true if @cover() is false
-    return true if @oracle() is false
-    return false

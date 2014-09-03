@@ -1,10 +1,9 @@
 {Subscriber, Emitter} = require 'emissary'
 HbFormat = require './hbformat'
 
-Gopath = require './gopath'
 Executor = require './executor'
 Environment = require './environment'
-GoExecutable = require './goexecutable'
+HarbourExecutable = require './harbourexecutable'
 SplicerSplitter = require './util/splicersplitter'
 
 _ = require 'underscore-plus'
@@ -29,7 +28,7 @@ class Dispatch
     @environment = new Environment(process.env)
     @executor = new Executor(@environment.Clone())
     @splicersplitter = new SplicerSplitter()
-    @goexecutable = new GoExecutable(@env())
+    @harbourexecutable = new HarbourExecutable(@env())
 
     @hbformat = new HbFormat(this)
 
