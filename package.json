@@ -1,0 +1,33 @@
+{
+  "name": "harbour-plus",
+  "description": "Adds `hbformat` functionality for the harbour language.",
+  "keywords": [
+    "harbour",
+    "hbformat"
+  ],
+  "version": "0.0.0",
+  "main": "./lib/harbour-plus",
+  "license": "Apache-2.0",
+  "engines": {
+    "atom": ">=0.116.0",
+    "node": "*"
+  },
+  "author": "Ernad Husremovic",
+  "homepage": "https://atom.io/packages/harbour-plus",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hernad/harbour-plus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hernad/harbour-plus/issues"
+  },
+  "dependencies": {
+    "async": ">=0.9.0",
+    "atom-message-panel": ">=1.1.1",
+    "emissary": "1.x",
+    "fs-plus": "2.x",
+    "glob": "3.x",
+    "temp": ">=0.7.0",
+    "underscore-plus": "1.x"
+  }
+}

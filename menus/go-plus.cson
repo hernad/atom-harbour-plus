@@ -1,0 +1,11 @@
+'menu': [
+  {
+    'label': 'Packages'
+    'submenu': [
+      'label': 'Harbour Plus'
+      'submenu': [
+        { 'label': 'Display Harbour Information', 'command': 'harbour:harbourinfo' }
+      ]
+    ]
+  }
+]
