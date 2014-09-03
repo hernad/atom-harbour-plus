@@ -16,10 +16,10 @@
   "homepage": "https://atom.io/packages/harbour-plus",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hernad/harbour-plus.git"
+    "url": "https://github.com/hernad/atom-harbour-plus.git"
   },
   "bugs": {
-    "url": "https://github.com/hernad/harbour-plus/issues"
+    "url": "https://github.com/hernad/atom-harbour-plus/issues"
   },
   "dependencies": {
     "async": ">=0.9.0",
