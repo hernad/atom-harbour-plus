@@ -112,11 +112,9 @@ class HarbourExecutable
                     value = tuple[1].substring(1, tuple[1].length - 1) if tuple[1].length > 2
                   if os.platform() is 'win32'
                     switch key
-                      when 'set HB_PATH' then harbour.hbpath = value
                       when 'set HB_ROOT' then harbour.hbroot = value
                   else
                     switch key
-                      when 'HB_PATH' then harbour.hbpath = value
                       when 'HB_ROOT' then harbour.hbroot = value
           console.log 'Error running harbour env: ' + err if err?
           console.log 'Error detail: ' + stderr if stderr? and stderr isnt ''
