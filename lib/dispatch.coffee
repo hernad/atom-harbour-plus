@@ -62,11 +62,8 @@ class Dispatch
 
     @environmentOverridesConfigurationSubscription = atom.config.observe 'harbour-plus.environmentOverridesConfiguration', => @displayGoInfo(true) if @ready
     @harbourInstallationSubscription = atom.config.observe 'harbour-plus.harbourInstallation', => @detect() if @ready
-    @updatetoolsCommandSubscription = atom.workspaceView.command 'harbourlang:updatetools', => @gettools(true) if @activated
+    #@updatetoolsCommandSubscription = atom.workspaceView.command 'harbourlang:updatetools', => @gettools(true) if @activated
 
-    @subscribe(@getMissingToolsSubscription)
-    @subscribe(@formatWithGoImportsSubscription)
-    @subscribe(@gopathSubscription)
     @subscribe(@environmentOverridesConfigurationSubscription)
     @subscribe(@harbourInstallationSubscription)
     @activated = true
