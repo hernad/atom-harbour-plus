@@ -60,7 +60,6 @@ class Dispatch
     @editorViewSubscription = atom.workspaceView.eachEditorView (editorView) => @handleEvents(editorView)
     @workspaceViewSubscription = atom.workspaceView.on 'pane-container:active-pane-item-changed', => @resetPanel()
 
-    @environmentOverridesConfigurationSubscription = atom.config.observe 'harbour-plus.environmentOverridesConfiguration', => @displayGoInfo(true) if @ready
     @harbourInstallationSubscription = atom.config.observe 'harbour-plus.harbourInstallation', => @detect() if @ready
 
     @subscribe(@environmentOverridesConfigurationSubscription)
@@ -114,11 +113,6 @@ class Dispatch
     @ready = true
     @emit 'ready'
 
-  displayGoInfo: (force) =>
-    editorView = atom.workspaceView.getActiveView()
-    unless force
-      return unless editorView?.constructor?
-      return unless editorView.constructor?.name is 'SettingsView' or @isValidEditorView(editorView)
 
     @resetPanel()
 
@@ -152,18 +146,10 @@ class Dispatch
 
     async.series([
       (callback) =>
-        @gofmt.formatBuffer(editorView, saving, callback)
+        @hbformat.formatBuffer(editorView, saving, callback)
     ], (err, modifymessages) =>
       @collectMessages(modifymessages)
       async.parallel([
-        (callback) =>
-          @govet.checkBuffer(editorView, saving, callback)
-        (callback) =>
-          @golint.checkBuffer(editorView, saving, callback)
-        (callback) =>
-          @gopath.check(editorView, saving, callback)
-        (callback) =>
-          @gobuild.checkBuffer(editorView, saving, callback)
       ], (err, checkmessages) =>
         @collectMessages(checkmessages)
         @emit 'dispatch-complete', editorView
