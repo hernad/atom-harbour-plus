@@ -61,8 +61,6 @@ class Dispatch
     @workspaceViewSubscription = atom.workspaceView.on 'pane-container:active-pane-item-changed', => @resetPanel()
 
     @harbourInstallationSubscription = atom.config.observe 'harbour-plus.harbourInstallation', => @detect() if @ready
-
-    @subscribe(@environmentOverridesConfigurationSubscription)
     @subscribe(@harbourInstallationSubscription)
     @activated = true
 
