@@ -48,8 +48,7 @@ class HarbourExecutable
           for element in elements
             executables.push path.normalize(path.join(element, 'harbour'))
 
-        # Binary Distribution
-        executables.push path.normalize(path.join('/usr', 'local', 'harbour', 'bin', 'harbour'))
+        executables.push path.normalize(path.join('/opt', 'harbour', 'bin', 'harbour'))
         # Homebrew
         executables.push path.normalize(path.join('/usr', 'local', 'bin', 'harbour', ))
       when 'win32'
