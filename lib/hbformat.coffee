@@ -52,7 +52,7 @@ class HbFormat
     # zato sam odsjekao path tako da dobijem
     # currentFile = test.prg
     # Na svu srecu imam cwd komandu koja me pozicionira u tekuci direktorij, u ovom slucaju /Users/hernad/github/harbour-plus
-    currentFile = buffer.getPath().split('\\').pop().split('/').pop();
+    currentFile = buffer.getPath().split('\\').pop().split('/').pop()
     args = _.union(args, [currentFile])
     harbour = @dispatch.harbourexecutable.current()
     console.log( "formatBuffer args:", args)
