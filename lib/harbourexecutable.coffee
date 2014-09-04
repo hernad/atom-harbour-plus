@@ -81,6 +81,7 @@ class HarbourExecutable
     harbour = new Harbour(absoluteExecutable, @pathexpander)
     async.series([
       (callback) =>
+        # done object
         done = (exitcode, stdout, stderr) =>
           unless stderr? and stderr isnt ''
             if stdout? and stdout isnt ''
@@ -92,7 +93,7 @@ class HarbourExecutable
           console.log 'Error detail (stderr): ' + stderr if stderr? and stderr isnt ''
           callback(null)
         try
-          console.log( 'starting [' + absoluteExecutable + ']', "@env", @env, "done:", done) 
+          console.log( 'starting [' + absoluteExecutable + ']', "@env", @env, "done:", done)
           @executor.exec( absoluteExecutable, false, @env, done, ['--version'] )
         catch error
           console.log 'harbour [' + absoluteExecutable + '] is not a valid harbour'
@@ -117,11 +118,11 @@ class HarbourExecutable
                   else
                     switch key
                       when 'HB_ROOT' then harbour.hbroot = value
-          console.log 'Error running harbour env: ' + err if err?
-          console.log 'Error detail: ' + stderr if stderr? and stderr isnt ''
+          console.log 'Error running harbour introspect (err): ' + err if err?
+          console.log 'Error detail introspect (stderr): ' + stderr if stderr? and stderr isnt ''
           callback(null)
         try
-          @executor.exec(absoluteExecutable, false, @env, done, ['env']) unless harbour is null
+          @executor.exec(absoluteExecutable, false, @env, done, ['--version']) unless harbour is null
         catch error
           console.log 'harbour [' + absoluteExecutable + '] is not a valid harbour'
     ], (err, results) =>
