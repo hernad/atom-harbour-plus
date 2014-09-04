@@ -98,36 +98,11 @@ class HarbourExecutable
         catch error
           console.log 'harbour [' + absoluteExecutable + '] is not a valid harbour'
           harbour = null
-      (callback) =>
-        done = (exitcode, stdout, stderr) =>
-          unless stderr? and stderr isnt ''
-            if stdout? and stdout isnt ''
-              items = stdout.split("\n")
-              for item in items
-                if item? and item isnt '' and item.trim() isnt ''
-                  tuple = item.split('=')
-                  key = tuple[0]
-                  value = ''
-                  if os.platform() is 'win32'
-                    value = tuple[1]
-                  else
-                    value = tuple[1].substring(1, tuple[1].length - 1) if tuple[1].length > 2
-                  if os.platform() is 'win32'
-                    switch key
-                      when 'set HB_ROOT' then harbour.hbroot = value
-                  else
-                    switch key
-                      when 'HB_ROOT' then harbour.hbroot = value
-          console.log 'Error running harbour introspect (err): ' + err if err?
-          console.log 'Error detail introspect (stderr): ' + stderr if stderr? and stderr isnt ''
-          callback(null)
-        try
-          @executor.exec(absoluteExecutable, false, @env, done, ['--version']) unless harbour is null
-        catch error
-          console.log 'harbour [' + absoluteExecutable + '] is not a valid harbour'
     ], (err, results) =>
       outercallback(err, harbour)
     )
+    console.log( "introspect HB_ROOT", proces.env.HB_ROOT )
+    harbour.hbroot = process.env.HB_ROOT
 
 
   current: =>
