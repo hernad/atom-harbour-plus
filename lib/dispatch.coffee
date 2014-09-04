@@ -162,7 +162,7 @@ class Dispatch
         @hbformat.formatBuffer(editorView, saving, callback)
      ], (err, modifymessages) =>
       @collectMessages(modifymessages)
-       @emit 'dispatch-complete', editorView
+      @emit 'dispatch-complete', editorView
     )
 
 
