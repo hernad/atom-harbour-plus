@@ -107,17 +107,36 @@ class Dispatch
     @ready = true
     @emit 'ready'
 
+  displayHarbourInfo: (force) =>
+    editorView = atom.workspaceView.getActiveView()
+    unless force
+      return unless editorView?.constructor?
+      return unless editorView.constructor?.name is 'SettingsView' or @isValidEditorView(editorView)
 
     @resetPanel()
+    harbour = @harbourexecutable.current()
+    if harbour? and harbour.executable? and harbour.executable.trim() isnt ''
+      @messagepanel.add new PlainMessageView message: 'Using Harbour: ' + harbour.name + ' (@' + harbour.executable + ')', className: 'text-success'
 
-    # PATH
-    thepath = if os.platform() is 'win32' then @env()?.Path else @env()?.PATH
-    if thepath? and thepath.trim() isnt ''
-      @messagepanel.add new PlainMessageView message: 'PATH: ' + thepath, className: 'text-success'
+
+      # hbformat
+      if harbour.hbformat()? and go.hbformat() isnt false
+        @messagepanel.add new PlainMessageView message: 'Format Tool: ' + harbour.hbformat(), className: 'text-success'
+      else
+        @messagepanel.add new PlainMessageView message: 'Format Tool (hbformat): Not Found', className: 'text-error' unless atom.config.get('harbour-plus.formatWithHarbourImports')
+
+      # PATH
+      thepath = if os.platform() is 'win32' then @env()?.Path else @env()?.PATH
+      if thepath? and thepath.trim() isnt ''
+        @messagepanel.add new PlainMessageView message: 'PATH: ' + thepath, className: 'text-success'
+      else
+        @messagepanel.add new PlainMessageView message: 'PATH: Not Set', className: 'text-error'
     else
-      @messagepanel.add new PlainMessageView message: 'PATH: Not Set', className: 'text-error'
+      @messagepanel.add new PlainMessageView message: 'No Harbour Installations Were Found', className: 'text-error'
 
     @messagepanel.attach()
+    @resetPanel()
+
 
   collectMessages: (messages) ->
     messages = _.flatten(messages) if messages? and _.size(messages) > 0
@@ -134,22 +153,21 @@ class Dispatch
     @dispatching = true
     harbour = @harbourexecutable.current()
     unless harbour? and harbour.executable? and harbour.executable.trim() isnt ''
-      @displayGoInfo(false)
+      @displayHarbourInfo(false)
       @dispatching = false
       return
 
-    #async.series([
-    #  (callback) =>
-    #    @hbformat.formatBuffer(editorView, saving, callback)
-    #], (err, modifymessages) =>
-    #  @collectMessages(modifymessages)
-    #  async.parallel([
-    #  ], (err, checkmessages) =>
-    #    @collectMessages(checkmessages)
-    #    @emit 'dispatch-complete', editorView
-    #    )
-    #)
-
+    async.series([
+      (callback) =>
+        @hbformat.formatBuffer(editorView, saving, callback)
+     ], (err, modifymessages) =>
+         @collectMessages(modifymessages)
+         async.parallel ([
+         ], (err, checkmessages) =>
+          @collectMessages(checkmessages)
+          @emit 'dispatch-complete', editorView
+         )
+    )
 
 
   handleBufferSave: (editorView, saving) ->
