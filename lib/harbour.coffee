@@ -22,16 +22,14 @@ class Harbour
     return @name + ' (@ ' + @hbroot + ')'
 
   harbour: ->
-    console.log @executable
+    console.log( "harbour executable", @executable )
     return false unless @executable? and @executable isnt ''
     return false unless fs.existsSync(@executable)
     return fs.realpathSync(@executable)
 
   hbformat: ->
+    console.log "hbroot", @hbroot
     return false unless @hbroot? and @hbroot isnt ''
     result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
     return false unless fs.existsSync(result)
     return fs.realpathSync(result)
-
-  format: ->
-    @hbrormat()

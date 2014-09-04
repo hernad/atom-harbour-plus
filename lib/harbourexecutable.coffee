@@ -89,11 +89,11 @@ class HarbourExecutable
               harbour.version = components[2]
               harbour.env = @env
           console.log 'Error running harbour version: ' + err if err?
-          console.log 'Error detail: ' + stderr if stderr? and stderr isnt ''
+          console.log 'Error detail (stderr): ' + stderr if stderr? and stderr isnt ''
           callback(null)
         try
-          console.log 'starting [' + absoluteExecutable + ']'
-          @executor.exec(absoluteExecutable, false, @env, done, ['--version'])
+          console.log( 'starting [' + absoluteExecutable + ']', "@env", @env, "done:", done) 
+          @executor.exec( absoluteExecutable, false, @env, done, ['--version'] )
         catch error
           console.log 'harbour [' + absoluteExecutable + '] is not a valid harbour'
           harbour = null
