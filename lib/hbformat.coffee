@@ -64,6 +64,7 @@ class HbFormat
     done = (exitcode, stdout, stderr, messages) =>
       console.log @name + ' - stdout: ' + stdout if stdout? and stdout.trim() isnt ''
       messages = @mapMessages(editorView, stderr, cwd) if stderr? and stderr.trim() isnt ''
+      # emituje se hbformat-complete event
       @emit @name + '-complete', editorView, saving
       callback(null, messages)
     @dispatch.executor.exec(cmd, cwd, @dispatch?.env(), done, args)
