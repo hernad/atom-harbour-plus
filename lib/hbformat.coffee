@@ -51,6 +51,7 @@ class HbFormat
     harbour = @dispatch.harbourexecutable.current()
     console.log( "formatBuffer args:", args)
     cmd = harbour.hbformat()
+    console.log( "hbformat cmd:", cmd )
     if cmd is false
       message =
         line: false
