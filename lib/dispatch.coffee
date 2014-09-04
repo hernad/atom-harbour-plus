@@ -161,12 +161,8 @@ class Dispatch
       (callback) =>
         @hbformat.formatBuffer(editorView, saving, callback)
      ], (err, modifymessages) =>
-         @collectMessages(modifymessages)
-         async.parallel ([
-         ], (err, checkmessages) =>
-          @collectMessages(checkmessages)
-          @emit 'dispatch-complete', editorView
-         )
+      @collectMessages(modifymessages)
+       @emit 'dispatch-complete', editorView
     )
 
 
