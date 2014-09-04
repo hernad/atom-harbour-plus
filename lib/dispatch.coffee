@@ -88,7 +88,6 @@ class Dispatch
   detect: =>
     @ready = false
     @harbourexecutable.once 'detect-complete', =>
-      @displayGoInfo(false)
       @emitReady()
     @harbourexecutable.detect()
 
