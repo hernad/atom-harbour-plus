@@ -1,7 +1,9 @@
 .DS_Store
 npm-debug.log
 node_modules
-.go
+*.bak
+*.go
+*.prg
 spec/tools/pwd/pwd_darwin_386
 spec/tools/pwd/pwd_darwin_amd64
 spec/tools/pwd/pwd_freebsd_386
