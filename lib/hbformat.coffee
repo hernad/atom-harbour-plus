@@ -48,7 +48,7 @@ class HbFormat
     args = _.union(args, configArgs) if configArgs? and _.size(configArgs) > 0
     args = _.union(args, [buffer.getPath()])
     harbour = @dispatch.harbourexecutable.current()
-    cmd = harbour.format()
+    cmd = harbour.hbformat()
     if cmd is false
       message =
         line: false
