@@ -43,11 +43,13 @@ class HbFormat
       callback(null)
       return
     cwd = path.dirname(buffer.getPath())
-    args = ['-w']
+    console.log( "cwd:", cwd)
+    args = []
     configArgs = @dispatch.splicersplitter.splitAndSquashToArray(' ', atom.config.get('harbour-plus.hbformatArgs'))
     args = _.union(args, configArgs) if configArgs? and _.size(configArgs) > 0
     args = _.union(args, [buffer.getPath()])
     harbour = @dispatch.harbourexecutable.current()
+    console.log( "formatBuffer args:", args)
     cmd = harbour.hbformat()
     if cmd is false
       message =
