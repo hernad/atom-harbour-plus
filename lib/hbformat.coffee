@@ -47,7 +47,13 @@ class HbFormat
     args = []
     configArgs = @dispatch.splicersplitter.splitAndSquashToArray(' ', atom.config.get('harbour-plus.hbformatArgs'))
     args = _.union(args, configArgs) if configArgs? and _.size(configArgs) > 0
-    args = _.union(args, [buffer.getPath()])
+    # hbformat bug fix
+    # hbformat /Users/hernad/github/harbour-plus/test.prg ne radi ?!
+    # zato sam odsjekao path tako da dobijem
+    # currentFile = test.prg
+    # Na svu srecu imam cwd komandu koja me pozicionira u tekuci direktorij, u ovom slucaju /Users/hernad/github/harbour-plus
+    currentFile = buffer.getPath().split('\\').pop().split('/').pop();
+    args = _.union(args, [currentFile])
     harbour = @dispatch.harbourexecutable.current()
     console.log( "formatBuffer args:", args)
     cmd = harbour.hbformat()
