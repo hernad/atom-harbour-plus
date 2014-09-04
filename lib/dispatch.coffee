@@ -59,9 +59,6 @@ class Dispatch
   subscribeToAtomEvents: =>
     @editorViewSubscription = atom.workspaceView.eachEditorView (editorView) => @handleEvents(editorView)
     @workspaceViewSubscription = atom.workspaceView.on 'pane-container:active-pane-item-changed', => @resetPanel()
-
-    @harbourInstallationSubscription = atom.config.observe 'harbour-plus.harbourInstallation', => @detect() if @ready
-    @subscribe(@harbourInstallationSubscription)
     @activated = true
 
   handleEvents: (editorView) =>

@@ -92,6 +92,7 @@ class HarbourExecutable
           console.log 'Error detail: ' + stderr if stderr? and stderr isnt ''
           callback(null)
         try
+          console.log 'starting [' + absoluteExecutable + ']'
           @executor.exec(absoluteExecutable, false, @env, done, ['--version'])
         catch error
           console.log 'harbour [' + absoluteExecutable + '] is not a valid harbour'
