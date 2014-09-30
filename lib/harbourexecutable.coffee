@@ -40,7 +40,7 @@ class HarbourExecutable
       when 'darwin', 'freebsd', 'linux', 'sunos'
         # Configuration
         if harbourExe? and harbourExe.trim() isnt ''
-          if harbourExe.lastIndexOf(path.sep + 'harbour') is harbourExe.length - 3
+          if harbourExe.lastIndexOf(path.sep + 'harbour') is harbourExe.length - 8
             executables.push path.normalize(harbourExe)
 
         # PATH
