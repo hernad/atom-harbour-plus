@@ -31,11 +31,11 @@ class Harbour
     return fs.realpathSync(@executable)
 
   hbformat: ->
-    console.log "hbroot", @hbroot
-    harbourFormatExe = atom.config.get('harbour-plus.harbourFormatExe')
-    if harbourFormatExe? and harbourFormatExe isnt ''
+    result = atom.config.get('harbour-plus.harbourFormatExe')
+    if result? and result isnt ''
       console.log "hbformat defined", result
       return result
+    console.log "hbroot", @hbroot
     return false unless @hbroot? and @hbroot isnt ''
     result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
     console.log "hbformat exec? :", result
