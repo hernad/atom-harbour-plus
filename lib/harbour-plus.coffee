@@ -2,8 +2,8 @@ module.exports =
   configDefaults:
     environmentOverridesConfiguration: true # Environment variables override configuration
     formatOnSave: false
-    harbourFormatExe: ''
-    harbourInstallation: '' # You should not need to specify this by default!
+    harbourFormatExe: '' # c:\harbour\bin\hbformat.exe or /opt/harbour/bin/hbformat
+    harbourExe: '' # e.g. c:\harbour\bin\harbour.exe or /opt/harbour/bin/harbour
     showPanel: true
     showPanelWhenNoIssuesExist: false
 
