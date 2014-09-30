@@ -35,6 +35,7 @@ class HarbourExecutable
   detect: =>
     executables = []
     harbourInstallation = atom.config.get('harbour-plus.harbourInstallation')
+    console.log "os.platform:", os.platform(), "path.separator", path.sep
     switch os.platform()
       when 'darwin', 'freebsd', 'linux', 'sunos'
         # Configuration
@@ -66,8 +67,6 @@ class HarbourExecutable
         # Binary Distribution
         executables.push path.normalize(path.join('C:','harbour', 'bin', 'harbour.exe'))
 
-      else
-          console.log "os.platform:", os.platform()
 
     # De-duplicate entries
     executables = _.uniq(executables)
