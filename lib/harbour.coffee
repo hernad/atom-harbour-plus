@@ -13,7 +13,7 @@ class Harbour
 
   constructor: (@executable, @pathexpander, options) ->
     @name = options.name if options?.name?
-    if os.platform() == 'win32'
+    if os.platform() is 'win32'
       console.log( "win32 exe" )
       @exe = ".exe"
 
