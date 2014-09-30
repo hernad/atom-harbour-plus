@@ -55,7 +55,7 @@ class HarbourExecutable
       when 'win32'
         # Configuration
         if harbourInstallation? and harbourInstallation.trim() isnt ''
-            if harbourInstallation.lastIndexOf(path.sep + 'harbour.exe') is harbourInstallation.length - 7
+          if harbourInstallation.lastIndexOf(path.sep + 'harbour.exe') is harbourInstallation.length - 7
             executables.push path.normalize(harbourInstallation)
 
         # PATH
