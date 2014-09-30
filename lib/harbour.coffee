@@ -32,6 +32,10 @@ class Harbour
 
   hbformat: ->
     console.log "hbroot", @hbroot
+    harbourFormatExe = atom.config.get('harbour-plus.harbourFormatExe')
+    if harbourFormatExe? and harbourFormatExe isnt ''
+      console.log "hbformat defined", result
+      return result
     return false unless @hbroot? and @hbroot isnt ''
     result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
     console.log "hbformat exec? :", result

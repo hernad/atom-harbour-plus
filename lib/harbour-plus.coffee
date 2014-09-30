@@ -2,8 +2,8 @@ module.exports =
   configDefaults:
     environmentOverridesConfiguration: true # Environment variables override configuration
     formatOnSave: false
+    harbourFormatExe: ''
     harbourInstallation: '' # You should not need to specify this by default!
-    harbourPath: '' # This should usually be set in the environment, not here
     showPanel: true
     showPanelWhenNoIssuesExist: false
 

@@ -34,14 +34,14 @@ class HarbourExecutable
 
   detect: =>
     executables = []
-    harbourInstallation = atom.config.get('harbour-plus.harbourInstallation')
+    harbourExe = atom.config.get('harbour-plus.harbourExe')
     console.log "os.platform:", os.platform(), "path.separator", path.sep
     switch os.platform()
       when 'darwin', 'freebsd', 'linux', 'sunos'
         # Configuration
-        if harbourInstallation? and harbourInstallation.trim() isnt ''
-          if harbourInstallation.lastIndexOf(path.sep + 'harbour') is harbourInstallation.length - 3
-            executables.push path.normalize(harbourInstallation)
+        if harbourExe? and harbourExe.trim() isnt ''
+          if harbourExe.lastIndexOf(path.sep + 'harbour') is harbourExe.length - 3
+            executables.push path.normalize(harbourExe)
 
         # PATH
         if @env.PATH?
@@ -54,9 +54,9 @@ class HarbourExecutable
         executables.push path.normalize(path.join('/usr', 'local', 'bin', 'harbour', ))
       when 'win32'
         # Configuration
-        if harbourInstallation? and harbourInstallation.trim() isnt ''
-          if harbourInstallation.lastIndexOf(path.sep + 'harbour.exe') is harbourInstallation.length - 12
-            executables.push path.normalize(harbourInstallation)
+        if harbourExe? and harbourExe.trim() isnt ''
+          if harbourExe.lastIndexOf(path.sep + 'harbour.exe') is harbourExe.length - 12
+            executables.push path.normalize(harbourExe)
 
         # PATH
         if @env.Path?
