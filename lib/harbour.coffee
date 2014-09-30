@@ -13,7 +13,10 @@ class Harbour
 
   constructor: (@executable, @pathexpander, options) ->
     @name = options.name if options?.name?
-    @exe = options.exe if options?.exe?
+    if os.platform() == 'win32'
+      console.log( "win32 exe" )
+      @exe = ".exe"
+
     @version = options.version if options?.version?
     @hbroot = options.hbroot if options?.hbroot?
 
@@ -31,5 +34,6 @@ class Harbour
     console.log "hbroot", @hbroot
     return false unless @hbroot? and @hbroot isnt ''
     result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
+    console.log "hbformat exec? :", result
     return false unless fs.existsSync(result)
     return fs.realpathSync(result)
