@@ -1,6 +1,5 @@
 {Subscriber, Emitter} = require 'emissary'
 HbFormat = require './hbformat'
-
 Executor = require './executor'
 Environment = require './environment'
 HarbourExecutable = require './harbourexecutable'
