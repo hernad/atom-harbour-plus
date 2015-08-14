@@ -92,10 +92,10 @@ class Dispatch
     @harbourexecutable.detect()
 
   resetAndDisplayMessages: (editor, msgs) =>
-    return unless @isValidEditorView(editor?)
-    @resetState(editor?)
-    @collectMessages(msgs?)
-    @displayMessages(editor?)
+    return unless @isValidEditorView?(editor?)
+    @resetState?(editor?)
+    @collectMessages?(msgs?)
+    @displayMessages?(editor?)
 
   displayMessages: (editor) =>
     @updatePane(editor?, @messages)
