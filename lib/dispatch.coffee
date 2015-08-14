@@ -91,15 +91,15 @@ class Dispatch
       @emitReady()
     @harbourexecutable.detect()
 
-  resetAndDisplayMessages: (editorView, msgs) =>
-    return unless @isValidEditorView(editorView)
-    @resetState(editorView)
-    @collectMessages(msgs)
-    @displayMessages(editorView)
+  resetAndDisplayMessages: (editor, msgs) =>
+    return unless @isValidEditorView(editor?)
+    @resetState(editor?)
+    @collectMessages(msgs?)
+    @displayMessages(editor?)
 
   displayMessages: (editor) =>
-    @updatePane(editor, @messages)
-    @updateGutter(editor, @messages)
+    @updatePane(editor?, @messages)
+    @updateGutter(editor?, @messages)
     @dispatching = false
     @emit 'display-complete'
 
