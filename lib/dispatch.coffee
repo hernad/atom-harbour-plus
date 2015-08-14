@@ -57,9 +57,10 @@ class Dispatch
     @emit 'destroyed'
 
   subscribeToAtomEvents: =>
-    @editorViewSubscription = atom.workspaceView.eachEditorView (editorView) => @handleEvents(editorView)
-    @workspaceViewSubscription = atom.workspaceView.on 'pane-container:active-pane-item-changed', => @resetPanel()
+    @editorViewSubscription = atom.workspace.observeTextEditors (editor) => @handleEvents(editor)
+    #@workspaceViewSubscription = atom.workspace.on 'pane-container:active-pane-item-changed', => @resetPanel()
     @activated = true
+
 
   handleEvents: (editorView) =>
     buffer = editorView?.getEditor()?.getBuffer()
@@ -108,7 +109,7 @@ class Dispatch
     @emit 'ready'
 
   displayHarbourInfo: (force) =>
-    editorView = atom.workspaceView.getActiveView()
+    editorView = atom.workspace.getActiveEditor()
     unless force
       return unless editorView?.constructor?
       return unless editorView.constructor?.name is 'SettingsView' or @isValidEditorView(editorView)
