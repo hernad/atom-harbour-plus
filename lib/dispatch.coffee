@@ -62,10 +62,10 @@ class Dispatch
     @activated = true
 
 
-  handleEvents: (editorView) =>
-    buffer = editorView?.getEditor()?.getBuffer()
+  handleEvents: (editor) =>
+    buffer = editor?.getEditor()?.getBuffer()
     return unless buffer?
-    @updateGutter(editorView, @messages)
+    @updateGutter(editor, @messages)
     modifiedsubscription = buffer.on 'contents-modified', =>
       return unless @activated
       @handleBufferChanged(editorView)
@@ -98,9 +98,9 @@ class Dispatch
     @collectMessages(msgs)
     @displayMessages(editorView)
 
-  displayMessages: (editorView) =>
-    @updatePane(editorView, @messages)
-    @updateGutter(editorView, @messages)
+  displayMessages: (editor) =>
+    @updatePane(editor, @messages)
+    @updateGutter(editor, @messages)
     @dispatching = false
     @emit 'display-complete'
 
