@@ -22,7 +22,7 @@ class Harbour
 
 
   description: ->
-    return @name + ' (@ ' + @hbroot + ')'
+    return @name? + ' (@ ' + @hbroot? + ')'
 
   harbour: ->
     console.log( "harbour executable", @executable )
