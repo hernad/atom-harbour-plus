@@ -5,7 +5,7 @@
     "harbour",
     "hbformat"
   ],
-  "version": "3.3.5",
+  "version": "3.3.6",
   "main": "./lib/harbour-plus",
   "license": "Apache-2.0",
   "engines": {
