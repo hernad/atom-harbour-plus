@@ -9,7 +9,7 @@ class HbFormat
   Emitter.includeInto(this)
 
   constructor: (dispatch) ->
-     atom.commands.add 'atom-workspace' 'harbourlang:hbformat', => @formatCurrentBuffer()
+     atom.commands.add 'atom-workspace', 'harbourlang:hbformat', -> @formatCurrentBuffer()
     @dispatch = dispatch
     @name = 'hbformat'
 
