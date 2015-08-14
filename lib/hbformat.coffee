@@ -10,7 +10,7 @@ class HbFormat
 
   constructor: (dispatch) ->
      atom.commands.add 'atom-workspace', 'harbourlang:hbformat', -> @formatCurrentBuffer()
-    @dispatch = dispatch
+    @dispatch = dispatch?
     @name = 'hbformat'
 
   destroy: ->
@@ -22,7 +22,7 @@ class HbFormat
 
   formatCurrentBuffer: ->
     editorView = atom?.workspaceView?.getActiveView()
-    return unless @dispatch.isValidEditorView(editorView)
+    return unless @dispatch?.isValidEditorView(editorView)
     @reset editorView
     done = (err, messages) =>
       @dispatch.resetAndDisplayMessages(editorView, messages)
