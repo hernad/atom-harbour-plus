@@ -117,7 +117,6 @@ class Dispatch
     if harbour? and harbour.executable? and harbour.executable.trim() isnt ''
       @messagepanel.add new PlainMessageView message: 'Using Harbour: ' + harbour.name + ' (@' + harbour.executable + ')', className: 'text-success'
 
-
       # hbformat
       if harbour.hbformat()? and go.hbformat() isnt false
         @messagepanel.add new PlainMessageView message: 'Format Tool: ' + harbour.hbformat(), className: 'text-success'
@@ -238,7 +237,7 @@ class Dispatch
       else
         # LineMessageView
         @messagepanel.add new LineMessageView file: file, line: line, character: column, message: message.msg, className: className
-    @messagepanel.attach() if atom?.workspaceView?
+    @messagepanel.attach() if atom?.workspace?
 
   isValidEditor: (editor) ->
     editor?.getGrammar()?.scopeName is 'source.harbour'
