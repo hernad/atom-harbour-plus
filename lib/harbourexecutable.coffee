@@ -37,7 +37,7 @@ class HarbourExecutable
     harbourExe = atom.config.get('harbour-plus.harbourExe')
     console.log "os.platform:", os.platform(), "path.separator", path.sep
     switch os.platform()
-      when 'darwin', 'freebsd', 'linux', 'sunos'
+      when 'darwin', 'freebsd', 'linux'
         # Configuration
         if harbourExe? and harbourExe.trim() isnt ''
           if harbourExe.lastIndexOf(path.sep + 'harbour') is harbourExe.length - 8
@@ -52,6 +52,8 @@ class HarbourExecutable
         executables.push path.normalize(path.join('/opt', 'harbour', 'bin', 'harbour'))
         # Homebrew
         executables.push path.normalize(path.join('/usr', 'local', 'bin', 'harbour', ))
+        console.log "harbour executables:", executables
+
       when 'win32'
         # Configuration
         if harbourExe? and harbourExe.trim() isnt ''
