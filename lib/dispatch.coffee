@@ -184,9 +184,9 @@ class Dispatch
   resetGutter: (editor) ->
     return unless @isValidEditor(editor)
     if atom.config.get('core.useReactEditor')
-      return unless editor?.getEditor()?
+      return unless editor?
       # Find current markers
-      markers = editor?.getEditor().getBuffer()?.findMarkers(class: 'harbour-plus')
+      markers = editor?.getBuffer()?.findMarkers(class: 'harbour-plus')
       return unless markers? and _.size(markers) > 0
       # Remove markers
       marker.destroy() for marker in markers
@@ -195,7 +195,7 @@ class Dispatch
     @resetGutter(editor)
     return unless messages? and messages.length > 0
     if atom.config.get('core.useReactEditor')
-      buffer = editor?.getEditor()?.getBuffer()
+      buffer = editor?.getBuffer()
       return unless buffer?
       for message in messages
         skip = false
