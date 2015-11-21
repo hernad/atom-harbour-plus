@@ -62,7 +62,7 @@ class Dispatch
 
 
   handleEvents: (editor) =>
-    buffer = editor?.getEditor()?.getBuffer()
+    buffer = editor?.getBuffer()
     return unless buffer?
     @updateGutter(editor, @messages)
     modifiedsubscription = buffer.on 'contents-modified', =>
