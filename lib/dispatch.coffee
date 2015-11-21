@@ -35,11 +35,11 @@ class Dispatch
     @on 'run-detect', => @detect()
 
     # Reset State If Requested
-    hbformatsubscription = @hbformat.on 'reset', (editorView) => @resetState(editorView)
+    hbformatsubscription = @hbformat.on 'reset', (editor) => @resetState(editor)
 
     @subscribe(hbformatsubscription)
 
-    @on 'dispatch-complete', (editorView) => @displayMessages(editorView)
+    @on 'dispatch-complete', (editor) => @displayMessages(editor)
     @subscribeToAtomEvents()
     @emit 'run-detect'
 
@@ -56,7 +56,7 @@ class Dispatch
     @emit 'destroyed'
 
   subscribeToAtomEvents: =>
-    @editorViewSubscription = atom.workspace.observeTextEditors (editor) => @handleEvents(editor)
+    @editorSubscription = atom.workspace.observeTextEditors (editor) => @handleEvents(editor)
     #@workspaceViewSubscription = atom.workspace.on 'pane-container:active-pane-item-changed', => @resetPanel()
     @activated = true
 
@@ -67,12 +67,12 @@ class Dispatch
     @updateGutter(editor, @messages)
     modifiedsubscription = buffer.on 'contents-modified', =>
       return unless @activated
-      @handleBufferChanged(editorView)
+      @handleBufferChanged(editor)
 
     savedsubscription = buffer.on 'saved', =>
       return unless @activated
       return unless not @dispatching
-      @handleBufferSave(editorView, true)
+      @handleBufferSave(editor, true)
 
     destroyedsubscription = buffer.once 'destroyed', =>
       savedsubscription?.off()
@@ -83,7 +83,7 @@ class Dispatch
     @subscribe(destroyedsubscription)
 
   unsubscribeFromAtomEvents: =>
-    @editorViewSubscription?.off()
+    @editorSubscription?.off()
 
   detect: =>
     @ready = false
@@ -92,7 +92,7 @@ class Dispatch
     @harbourexecutable.detect()
 
   resetAndDisplayMessages: (editor, msgs) =>
-    return unless @isValidEditorView?(editor?)
+    return unless @isValidEditor?(editor?)
     @resetState?(editor?)
     @collectMessages?(msgs?)
     @displayMessages?(editor?)
@@ -108,10 +108,10 @@ class Dispatch
     @emit 'ready'
 
   displayHarbourInfo: (force) =>
-    editorView = atom.workspace.getActiveEditor()
+    editor = atom.workspace.getActiveEditor()
     unless force
-      return unless editorView?.constructor?
-      return unless editorView.constructor?.name is 'SettingsView' or @isValidEditorView(editorView)
+      return unless editor?.constructor?
+      return unless editor.constructor?.name is 'SettingsView' or @isValidEditor(editor)
 
     @resetPanel()
     harbour = @harbourexecutable.current()
@@ -149,7 +149,7 @@ class Dispatch
       return element?.line + ':' + element?.column + ':' + element?.msg
     @emit 'messages-collected', _.size(@messages)
 
-  triggerPipeline: (editorView, saving) ->
+  triggerPipeline: (editor, saving) ->
     @dispatching = true
     harbour = @harbourexecutable.current()
     unless harbour? and harbour.executable? and harbour.executable.trim() isnt ''
@@ -159,43 +159,43 @@ class Dispatch
 
     async.series([
       (callback) =>
-        @hbformat.formatBuffer(editorView, saving, callback)
+        @hbformat.formatBuffer(editor, saving, callback)
      ], (err, modifymessages) =>
       @collectMessages(modifymessages)
-      @emit 'dispatch-complete', editorView
+      @emit 'dispatch-complete', editor
     )
 
 
-  handleBufferSave: (editorView, saving) ->
+  handleBufferSave: (editor, saving) ->
     return unless @ready and @activated
-    return unless @isValidEditorView(editorView)
-    @resetState(editorView)
-    @triggerPipeline(editorView, saving)
+    return unless @isValidEditor(editor)
+    @resetState(editor)
+    @triggerPipeline(editor, saving)
 
-  handleBufferChanged: (editorView) ->
+  handleBufferChanged: (editor) ->
     return unless @ready and @activated
-    return unless @isValidEditorView(editorView)
+    return unless @isValidEditor(editor)
 
-  resetState: (editorView) ->
+  resetState: (editor) ->
     @messages = []
-    @resetGutter(editorView)
+    @resetGutter(editor)
     @resetPanel()
 
-  resetGutter: (editorView) ->
-    return unless @isValidEditorView(editorView)
+  resetGutter: (editor) ->
+    return unless @isValidEditor(editor)
     if atom.config.get('core.useReactEditor')
-      return unless editorView.getEditor()?
+      return unless editor?.getEditor()?
       # Find current markers
-      markers = editorView.getEditor().getBuffer()?.findMarkers(class: 'harbour-plus')
+      markers = editor?.getEditor().getBuffer()?.findMarkers(class: 'harbour-plus')
       return unless markers? and _.size(markers) > 0
       # Remove markers
       marker.destroy() for marker in markers
 
-  updateGutter: (editorView, messages) ->
-    @resetGutter(editorView)
+  updateGutter: (editor, messages) ->
+    @resetGutter(editor)
     return unless messages? and messages.length > 0
     if atom.config.get('core.useReactEditor')
-      buffer = editorView?.getEditor()?.getBuffer()
+      buffer = editor?.getEditor()?.getBuffer()
       return unless buffer?
       for message in messages
         skip = false
@@ -205,13 +205,13 @@ class Dispatch
         unless skip
           if message?.line? and message.line isnt false and message.line >= 0
             marker = buffer.markPosition([message.line - 1, 0], class: 'harbour-plus', invalidate: 'touch')
-            editorView.getEditor().decorateMarker(marker, type: 'gutter', class: 'hbplus-' + message.type)
+            editor.decorateMarker(marker, type: 'gutter', class: 'hbplus-' + message.type)
 
   resetPanel: ->
     @messagepanel?.close()
     @messagepanel?.clear()
 
-  updatePane: (editorView, messages) ->
+  updatePane: (editor, messages) ->
     @resetPanel
     return unless messages?
     if messages.length <= 0 and atom.config.get('harbour-plus.showPanelWhenNoIssuesExist')
@@ -241,8 +241,8 @@ class Dispatch
         @messagepanel.add new LineMessageView file: file, line: line, character: column, message: message.msg, className: className
     @messagepanel.attach() if atom?.workspaceView?
 
-  isValidEditorView: (editorView) ->
-    editorView?.getEditor()?.getGrammar()?.scopeName is 'source.harbour'
+  isValidEditor: (editor) ->
+    editor?.getGrammar()?.scopeName is 'source.harbour'
 
   env: ->
     @environment.Clone()
