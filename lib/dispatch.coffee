@@ -108,10 +108,9 @@ class Dispatch
     @emit 'ready'
 
   displayHarbourInfo: (force) =>
-    editor = atom.workspace.getActiveEditor()
+    editor = atom.workspace?.getActiveTextEditor()
     unless force
-      return unless editor?.constructor?
-      return unless editor.constructor?.name is 'SettingsView' or @isValidEditor(editor)
+      return @isValidEditor(editor)
 
     @resetPanel()
     harbour = @harbourexecutable.current()
