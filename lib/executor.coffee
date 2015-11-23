@@ -11,7 +11,8 @@ class Executor
       cwd: null
       env: null
       encoding: 'utf8'
-    options.cwd = fs.realpathSync(cwd) if cwd? and cwd isnt '' and cwd isnt false and fs.existsSync(cwd)
+    options.cwd = fs.realpathSync(cwd) if cwd? and cwd isnt '' and\
+     cwd isnt false and fs.existsSync(cwd)
     options.env = if env? then env else @environment
     args = [] unless args?
     done = spawnSync(command, args, options)
@@ -40,12 +41,15 @@ class Executor
     options =
       cwd: null
       env: null
-    options.cwd = fs.realpathSync(cwd) if cwd? and cwd isnt '' and cwd isnt false and fs.existsSync(cwd)
+    options.cwd = fs.realpathSync(cwd) if cwd? and cwd isnt '' and\
+     cwd isnt false and fs.existsSync(cwd)
     options.env = if env? then env else @environment
     stdout = (data) -> output += data
     stderr = (data) -> error += data
     exit = (data) ->
-      if error? and error isnt '' and error.replace(/\r?\n|\r/g, '') is "\'" + command + "\' is not recognized as an internal or external command,operable program or batch file."
+      if error? and error isnt '' and error.replace(/\r?\n|\r/g, '') is\
+         "\'" + command + "\' is not recognized as an internal or external" +\
+         "command,operable program or batch file."
         message =
             line: false
             column: false
@@ -59,8 +63,9 @@ class Executor
       callback(code, output, error, messages)
     args = [] unless args?
     console.log( "Executor.exec:", command, args, options )
-    bufferedprocess = new BufferedProcess({command, args, options, stdout, stderr, exit})
-    bufferedprocess.process.once 'error', (err) =>
+    bufferedprocess =
+      new BufferedProcess({command, args, options, stdout, stderr, exit})
+    bufferedprocess.process.once 'error', (err) ->
       if err.code is 'ENOENT'
         message =
             line: false

@@ -6,7 +6,8 @@ HarbourExecutable = require('./harbourexecutable')
 SplicerSplitter = require('./util/splicersplitter')
 
 _ = require 'underscore-plus'
-{MessagePanelView, LineMessageView, PlainMessageView} = require 'atom-message-panel'
+{MessagePanelView, LineMessageView, PlainMessageView} =
+  require 'atom-message-panel'
 {$, SettingsView} = require 'atom'
 path = require 'path'
 os = require 'os'
@@ -32,7 +33,10 @@ class Dispatch
     @harbourexecutable = new HarbourExecutable(@env())
 
     @hbformat = new HbFormat(this)
-    @messagepanel = new MessagePanelView({title: '<span class="icon-diff-added"></span> harbour-plus', rawTitle: true}) unless @messagepanel?
+    @messagepanel =
+     new MessagePanelView(
+       {title: '<span class="icon-diff-added"></span> harbour-plus',
+       rawTitle: true}) unless @messagepanel?
 
     @on 'run-detect', => @detect()
 
@@ -72,9 +76,12 @@ class Dispatch
     @items.splice(index, 1)
 
   subscribeToAtomEvents: =>
-    @addItem(atom.workspace.observeTextEditors((editor) => @handleEvents(editor)))
-    @addItem(atom.workspace.onDidChangeActivePaneItem((event) => @resetPanel()))
-    @addItem(atom.config.observe('harbour-plus.harbourExe', => @displayHarbourInfo(true) if @ready))
+    @addItem(atom.workspace.observeTextEditors((editor) =>
+      @handleEvents(editor)))
+    @addItem(atom.workspace.onDidChangeActivePaneItem((event) =>
+      @resetPanel()))
+    @addItem(atom.config.observe('harbour-plus.harbourExe', =>
+      @displayHarbourInfo(true) if @ready))
     atom.commands.add 'atom-workspace',
       'harbourlang:harbourinfo': => @displayHarbourInfo(true) if @ready
 
@@ -87,12 +94,12 @@ class Dispatch
       return unless @activated
       @handleBufferChanged(editor)
 
-    savedsubscription = buffer.onDidSave =>
+    savedsubscription = buffer.onDidSave ->
       return unless @activated
       return unless not @dispatching
       @handleBufferSave(editor, true)
 
-    destroyedsubscription = buffer.onDidDestroy =>
+    destroyedsubscription = buffer.onDidDestroy ->
       savedsubscription?.off()
       modifiedsubscription?.off()
 
@@ -127,9 +134,10 @@ class Dispatch
     @emit 'ready'
 
   displayHarbourInfo: (force) =>
-    @messagepanel.add new PlainMessageView message: 'test', className: 'text-success'
+    @messagepanel.add new PlainMessageView
+      message: 'test', className: 'text-success'
     @messagepanel.attach()
-    
+
     editor = atom.workspace?.getActiveTextEditor()
     unless force
       return unless @isValidEditor(editor)
@@ -138,22 +146,32 @@ class Dispatch
     harbour = @harbourexecutable.current()
     console.log 'harbour current', harbour
     if harbour? and harbour.executable? and harbour.executable.trim() isnt ''
-      @messagepanel.add new PlainMessageView message: 'Using Harbour: ' + harbour.name + ' (@' + harbour.executable + ')', className: 'text-success'
+      @messagepanel.add new PlainMessageView
+        message: 'Using Harbour: ' + harbour.name + ' (@' +
+          harbour.executable + ')', className: 'text-success'
 
       # hbformat
       if harbour.hbformat()? and harbour.hbformat() isnt false
-        @messagepanel.add new PlainMessageView message: 'Format Tool: ' + harbour.hbformat(), className: 'text-success'
+        @messagepanel.add new PlainMessageView
+          message: 'Format Tool: ' + harbour.hbformat(),
+          className: 'text-success'
       else
-        @messagepanel.add new PlainMessageView message: 'Format Tool (hbformat): Not Found', className: 'text-error' unless atom.config.get('harbour-plus.formatWithHarbourImports')
+        @messagepanel.add new PlainMessageView
+          message: 'Format Tool (hbformat): Not Found',
+          className: 'text-error' \
+           unless atom.config.get('harbour-plus.formatWithHarbourImports')
 
       # PATH
       thepath = if os.platform() is 'win32' then @env()?.Path else @env()?.PATH
       if thepath? and thepath.trim() isnt ''
-        @messagepanel.add new PlainMessageView message: 'PATH: ' + thepath, className: 'text-success'
+        @messagepanel.add new PlainMessageView
+          message: 'PATH: ' + thepath, className: 'text-success'
       else
-        @messagepanel.add new PlainMessageView message: 'PATH: Not Set', className: 'text-error'
+        @messagepanel.add new PlainMessageView
+          message: 'PATH: Not Set', className: 'text-error'
     else
-      @messagepanel.add new PlainMessageView message: 'No Harbour Installations Were Found', className: 'text-error'
+      @messagepanel.add new PlainMessageView
+        message: 'No Harbour Installations Were Found', className: 'text-error'
 
     @messagepanel.attach()
     @resetPanel()
@@ -173,7 +191,8 @@ class Dispatch
   triggerPipeline: (editor, saving) ->
     @dispatching = true
     harbour = @harbourexecutable.current()
-    unless harbour? and harbour.executable? and harbour.executable.trim() isnt ''
+    unless harbour? and harbour.executable? and
+    harbour.executable.trim() isnt ''
       @displayHarbourInfo(false)
       @dispatching = false
       return
@@ -182,8 +201,8 @@ class Dispatch
       (callback) =>
         @hbformat.formatBuffer(editor, saving, callback)
      ], (err, modifymessages) =>
-      @collectMessages(modifymessages)
-      @emit 'dispatch-complete', editor
+       @collectMessages(modifymessages)
+       @emit 'dispatch-complete', editor
     )
 
 
@@ -225,8 +244,10 @@ class Dispatch
 
         unless skip
           if message?.line? and message.line isnt false and message.line >= 0
-            marker = buffer.markPosition([message.line - 1, 0], class: 'harbour-plus', invalidate: 'touch')
-            editor.decorateMarker(marker, type: 'gutter', class: 'hbplus-' + message.type)
+            marker = buffer.markPosition([message.line - 1, 0],\
+            class: 'harbour-plus', invalidate: 'touch')
+            editor.decorateMarker(marker, type: 'gutter',\
+            class: 'harbour-plus-' + message.type)
 
   resetPanel: ->
     @messagepanel?.close()
@@ -249,17 +270,24 @@ class Dispatch
         when 'warning' then 'text-warning'
         else 'text-info'
 
-      file = if message.file? and message.file.trim() isnt '' then message.file else null
-      file = atom.project.relativize(file) if file? and file isnt '' and atom?.project?
-      column = if message.column? and message.column isnt '' and message.column isnt false then message.column else null
-      line = if message.line? and message.line isnt '' and message.line isnt false then message.line else null
+      file = if message.file? and message.file.trim() \
+        isnt '' then message.file else null
+      file = atom.project.relativize(file) if file? and file \
+        isnt '' and atom?.project?
+      column = if message.column? and message.column \
+        isnt '' and message.column isnt false then message.column else null
+      line = if message.line? and message.line \
+        isnt '' and message.line isnt false then message.line else null
 
       if file is null and column is null and line is null
         # PlainMessageView
-        @messagepanel.add new PlainMessageView message: message.msg, className: className
+        @messagepanel.add new PlainMessageView \
+        message: message.msg, className: className
       else
         # LineMessageView
-        @messagepanel.add new LineMessageView file: file, line: line, character: column, message: message.msg, className: className
+        @messagepanel.add new LineMessageView \
+        file: file, line: line, character: column, \
+        message: message.msg, className: className
     @messagepanel.attach() if atom?.workspace?
 
   isValidEditor: (editor) ->

@@ -40,7 +40,8 @@ class HarbourExecutable
       when 'darwin', 'freebsd', 'linux'
         # Configuration
         if harbourExe? and harbourExe.trim() isnt ''
-          if harbourExe.lastIndexOf(path.sep + 'harbour') is harbourExe.length - 8
+          if harbourExe.lastIndexOf(path.sep + 'harbour') is\
+          harbourExe.length - 8
             executables.push path.normalize(harbourExe)
 
         # PATH
@@ -49,14 +50,17 @@ class HarbourExecutable
           for element in elements
             executables.push path.normalize(path.join(element, 'harbour'))
 
-        executables.push path.normalize(path.join('/opt', 'harbour', 'bin', 'harbour'))
-        executables.push path.normalize(path.join('/usr', 'local', 'bin', 'harbour', ))
+        executables.push path.normalize(\
+         path.join('/opt', 'harbour', 'bin', 'harbour'))
+        executables.push path.normalize(\
+         path.join('/usr', 'local', 'bin', 'harbour', ))
         console.log "harbour executables:", executables
 
       when 'win32'
         # Configuration
         if harbourExe? and harbourExe.trim() isnt ''
-          if harbourExe.lastIndexOf(path.sep + 'harbour.exe') is harbourExe.length - 12
+          if harbourExe.lastIndexOf(path.sep + 'harbour.exe')\
+          is harbourExe.length - 12
             executables.push path.normalize(harbourExe)
 
         # PATH
@@ -66,7 +70,8 @@ class HarbourExecutable
             executables.push path.normalize(path.join(element, 'harbour.exe'))
 
         # Binary Distribution
-        executables.push path.normalize(path.join('C:','harbour', 'bin', 'harbour.exe'))
+        executables.push path.normalize(\
+        path.join('C:','harbour', 'bin', 'harbour.exe'))
 
 
     # De-duplicate entries
@@ -80,7 +85,6 @@ class HarbourExecutable
 
   introspect: (executable, outercallback) =>
     absoluteExecutable = path.resolve(executable)
-
     harbour = new Harbour(absoluteExecutable, @pathexpander)
     async.series([
       (callback) =>
@@ -94,15 +98,17 @@ class HarbourExecutable
               harbour.version = components[2]
               harbour.env = @env
           console.log 'Error running harbour version: ' + err if err?
-          console.log 'Error detail (stderr): ' + stderr if stderr? and stderr isnt ''
+          console.log 'Error detail (stderr): ' +\
+          stderr if stderr? and stderr isnt ''
           callback(null)
         try
           console.log( 'starting [' + absoluteExecutable + ' --version ]' )
           @executor.exec( absoluteExecutable, false, @env, done, ['--version'] )
         catch error
-          console.log 'harbour [' + absoluteExecutable + '] is not a valid harbour'
+          console.log 'harbour [' + absoluteExecutable +\
+           '] is not a valid harbour'
           harbour = null
-    ], (err, results) =>
+    ], (err, results) ->
       outercallback(err, harbour)
     )
     console.log( "introspect HB_ROOT", process.env.HB_ROOT )

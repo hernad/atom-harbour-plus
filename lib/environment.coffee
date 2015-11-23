@@ -9,7 +9,8 @@ class Environment
 
   Clone: ->
     env = _.clone(@environment)
-    return env unless os.platform() is 'darwin' and env.PATH is '/usr/bin:/bin:/usr/sbin:/sbin'
+    return env unless os.platform() is 'darwin'\
+      and env.PATH is '/usr/bin:/bin:/usr/sbin:/sbin'
     pathhelper = '/usr/libexec/path_helper'
     return env unless fs.existsSync(pathhelper)
     executor = new Executor(env)
