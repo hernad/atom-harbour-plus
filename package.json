@@ -22,7 +22,7 @@
   },
   "bugs": {
     "url": "https://github.com/hernad/atom-harbour-plus/issues"
-  }
+  },
   "dependencies": {
     "async": ">=0.9.0",
     "atom-message-panel": ">=1.1.1",
