@@ -24,7 +24,7 @@ class Harbour
     return @name? + ' (@ ' + @hbroot? + ')'
 
   harbour: ->
-    console.log( "harbour executable", @executable )
+    # console.log( "harbour executable", @executable )
     return false unless @executable? and @executable isnt ''
     return false unless fs.existsSync(@executable)
     return fs.realpathSync(@executable)
@@ -32,11 +32,11 @@ class Harbour
   hbformat: ->
     result = atom.config.get('harbour-plus.harbourFormatExe')
     if result? and result isnt ''
-      console.log "hbformat defined", result
+      #console.log "hbformat defined", result
       return result
-    console.log "hbroot", @hbroot
+    #console.log "hbroot", @hbroot
     return false unless @hbroot? and @hbroot isnt ''
     result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
-    console.log "hbformat exec? :", result
+    #console.log "hbformat exec? :", result
     return false unless fs.existsSync(result)
     return fs.realpathSync(result)

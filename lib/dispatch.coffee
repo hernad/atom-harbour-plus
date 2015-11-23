@@ -26,7 +26,7 @@ class Dispatch
     @messages = []
     @items = []
 
-    console.log 'dispatch constructor'
+    #console.log 'dispatch constructor'
     @environment = new Environment(process.env)
     @executor = new Executor(@environment.Clone())
     @splicersplitter = new SplicerSplitter()
@@ -117,7 +117,7 @@ class Dispatch
     @harbourexecutable.detect()
 
   resetAndDisplayMessages: (editor, msgs) =>
-    console.log 'reset and display messages', editor, msgs
+    # console.log 'reset and display messages', editor, msgs
     return unless @isValidEditor(editor)
     @resetState?(editor?)
     @collectMessages?(msgs?)
@@ -144,7 +144,7 @@ class Dispatch
 
     @resetPanel()
     harbour = @harbourexecutable.current()
-    console.log 'harbour current', harbour
+    # console.log 'harbour current', harbour
     if harbour? and harbour.executable? and harbour.executable.trim() isnt ''
       @messagepanel.add new PlainMessageView
         message: 'Using Harbour: ' + harbour.name + ' (@' +
@@ -256,8 +256,10 @@ class Dispatch
   updatePane: (editor, messages) ->
     @resetPanel
     return unless messages?
-    if messages.length <= 0 and atom.config.get('harbour-plus.showPanelWhenNoIssuesExist')
-      @messagepanel.add new PlainMessageView message: 'No Issues', className: 'text-success'
+    if messages.length <= 0 and \
+    atom.config.get('harbour-plus.showPanelWhenNoIssuesExist')
+      @messagepanel.add new PlainMessageView \
+      message: 'No Issues', className: 'text-success'
       @messagepanel.attach()
       return
     return unless messages.length > 0

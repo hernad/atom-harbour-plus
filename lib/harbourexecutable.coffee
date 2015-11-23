@@ -35,7 +35,7 @@ class HarbourExecutable
   detect: =>
     executables = []
     harbourExe = atom.config.get('harbour-plus.harbourExe')
-    console.log "os.platform:", os.platform(), "path.separator", path.sep
+    # console.log "os.platform:", os.platform(), "path.separator", path.sep
     switch os.platform()
       when 'darwin', 'freebsd', 'linux'
         # Configuration
@@ -54,7 +54,7 @@ class HarbourExecutable
          path.join('/opt', 'harbour', 'bin', 'harbour'))
         executables.push path.normalize(\
          path.join('/usr', 'local', 'bin', 'harbour', ))
-        console.log "harbour executables:", executables
+        # console.log "harbour executables:", executables
 
       when 'win32'
         # Configuration
@@ -79,7 +79,7 @@ class HarbourExecutable
     async.filter executables, fs.exists, (results) =>
       executables = results
       async.map executables, @introspect, (err, results) =>
-        console.log 'Error mapping harbour: ' + err if err?
+        # console.log 'Error mapping harbour: ' + err if err?
         @harbours = results
         @emit('detect-complete', @current())
 
@@ -93,25 +93,25 @@ class HarbourExecutable
           unless stderr? and stderr isnt ''
             if stdout? and stdout isnt ''
               components = stdout.replace(/\r?\n|\r/g, '').split(' ')
-              console.log 'stdout components', components
+              # console.log 'stdout components', components
               harbour.name = components[2] + ' ' + components[3]
               harbour.version = components[2]
               harbour.env = @env
-          console.log 'Error running harbour version: ' + err if err?
-          console.log 'Error detail (stderr): ' +\
+          # console.log 'Error running harbour version: ' + err if err?
+          # console.log 'Error detail (stderr): ' +\
           stderr if stderr? and stderr isnt ''
           callback(null)
         try
-          console.log( 'starting [' + absoluteExecutable + ' --version ]' )
+          # console.log( 'starting [' + absoluteExecutable + ' --version ]' )
           @executor.exec( absoluteExecutable, false, @env, done, ['--version'] )
         catch error
-          console.log 'harbour [' + absoluteExecutable +\
+          # console.log 'harbour [' + absoluteExecutable +\
            '] is not a valid harbour'
           harbour = null
     ], (err, results) ->
       outercallback(err, harbour)
     )
-    console.log( "introspect HB_ROOT", process.env.HB_ROOT )
+    # console.log( "introspect HB_ROOT", process.env.HB_ROOT )
     harbour.hbroot = process.env.HB_ROOT
 
 

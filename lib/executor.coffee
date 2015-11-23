@@ -62,7 +62,7 @@ class Executor
       code = data
       callback(code, output, error, messages)
     args = [] unless args?
-    console.log( "Executor.exec:", command, args, options )
+    # console.log( "Executor.exec:", command, args, options )
     bufferedprocess =
       new BufferedProcess({command, args, options, stdout, stderr, exit})
     bufferedprocess.process.once 'error', (err) ->

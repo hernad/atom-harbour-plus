@@ -23,7 +23,8 @@ class HbFormat
 
   formatCurrentBuffer: ->
     editor = atom?.workspace?.getActiveTextEditor()
-    console.log 'editor current buffer', editor
+    editor.save()
+    #console.log 'editor current buffer', editor
     return unless @dispatch.isValidEditor(editor)
     @reset editor
     done = (err, messages) =>
@@ -31,7 +32,7 @@ class HbFormat
     @formatBuffer(editor, false, done)
 
   formatBuffer: (editor, saving, callback = ->) ->
-    console.log 'format buffer'
+    # console.log 'format buffer'
     unless @dispatch.isValidEditor(editor)
       @emit @name + '-complete', editor, saving
       callback(null)
@@ -46,21 +47,23 @@ class HbFormat
       callback(null)
       return
     cwd = path.dirname(buffer.getPath())
-    console.log( "cwd:", cwd)
+    # console.log( "cwd:", cwd)
     args = []
-    configArgs = @dispatch.splicersplitter.splitAndSquashToArray(' ', atom.config.get('harbour-plus.hbformatArgs'))
+    configArgs = @dispatch.splicersplitter.splitAndSquashToArray(' ', \
+      atom.config.get('harbour-plus.hbformatArgs'))
     args = _.union(args, configArgs) if configArgs? and _.size(configArgs) > 0
     # hbformat bug fix
     # hbformat /Users/hernad/github/harbour-plus/test.prg ne radi ?!
     # zato sam odsjekao path tako da dobijem
     # currentFile = test.prg
-    # Na svu srecu imam cwd komandu koja me pozicionira u tekuci direktorij, u ovom slucaju /Users/hernad/github/harbour-plus
+    # Na svu srecu imam cwd komandu koja me pozicionira u tekuci direktorij,
+    # u ovom slucaju /Users/hernad/github/harbour-plus
     currentFile = buffer.getPath().split('\\').pop().split('/').pop()
     args = _.union(args, [currentFile])
     harbour = @dispatch.harbourexecutable.current()
-    console.log( "formatBuffer args:", args)
+    # console.log( "formatBuffer args:", args)
     cmd = harbour.hbformat()
-    console.log( "hbformat cmd:", cmd )
+    # console.log( "hbformat cmd:", cmd )
     if cmd is false
       message =
         line: false
@@ -71,8 +74,10 @@ class HbFormat
       callback(null, [message])
       return
     done = (exitcode, stdout, stderr, messages) =>
-      console.log @name + ' - stdout: ' + stdout if stdout? and stdout.trim() isnt ''
-      messages = @mapMessages(editor, stderr, cwd) if stderr? and stderr.trim() isnt ''
+      #console.log @name + ' - stdout: ' + stdout \
+      # if stdout? and stdout.trim() isnt ''
+      messages = @mapMessages(editor, stderr, cwd) \
+       if stderr? and stderr.trim() isnt ''
       # emituje se hbformat-complete event
       @emit @name + '-complete', editor, saving
       callback(null, messages)
@@ -84,7 +89,8 @@ class HbFormat
     return messages unless data? and data isnt ''
     extract = (matchLine) =>
       return unless matchLine?
-      file = if matchLine[1]? and matchLine[1] isnt '' then matchLine[1] else null
+      file = if matchLine[1]? and matchLine[1] isnt '' \
+        then matchLine[1] else null
       message = switch
         when matchLine[4]?
           file: file
