@@ -106,15 +106,13 @@ class HarbourExecutable
           @executor.exec( absoluteExecutable, false, @env, done, ['--version'] )
         catch error
           # console.log 'harbour [' + absoluteExecutable +\
-           '] is not a valid harbour'
+          # '] is not a valid harbour'
           harbour = null
     ], (err, results) ->
       outercallback(err, harbour)
     )
     # console.log( "introspect HB_ROOT", process.env.HB_ROOT )
-    hbroot = process.env.HB_ROOT
-    hbroot = '' if not hbroot?
-    harbour.hbroot = hbroot
+    harbour?.hbroot = process.env.HB_ROOT
 
 
   current: =>
