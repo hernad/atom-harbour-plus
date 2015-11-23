@@ -50,7 +50,6 @@ class HarbourExecutable
             executables.push path.normalize(path.join(element, 'harbour'))
 
         executables.push path.normalize(path.join('/opt', 'harbour', 'bin', 'harbour'))
-        # Homebrew
         executables.push path.normalize(path.join('/usr', 'local', 'bin', 'harbour', ))
         console.log "harbour executables:", executables
 
@@ -90,6 +89,7 @@ class HarbourExecutable
           unless stderr? and stderr isnt ''
             if stdout? and stdout isnt ''
               components = stdout.replace(/\r?\n|\r/g, '').split(' ')
+              console.log 'stdout components', components
               harbour.name = components[2] + ' ' + components[3]
               harbour.version = components[2]
               harbour.env = @env

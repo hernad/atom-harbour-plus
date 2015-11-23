@@ -1,7 +1,7 @@
-{spawn} = require 'child_process'
-{Subscriber, Emitter} = require 'emissary'
-_ = require 'underscore-plus'
-path = require 'path'
+{spawn} = require ('child_process')
+{Subscriber, Emitter} = require ('emissary')
+_ = require ('underscore-plus')
+path = require ('path')
 
 module.exports =
 class HbFormat
@@ -9,8 +9,9 @@ class HbFormat
   Emitter.includeInto(this)
 
   constructor: (dispatch) ->
-     atom.commands.add 'atom-workspace', 'harbourlang:hbformat', -> @formatCurrentBuffer()
-    @dispatch = dispatch?
+    atom.commands.add 'atom-workspace',
+      'harbourlang:hbformat': => @formatCurrentBuffer()
+    @dispatch = dispatch
     @name = 'hbformat'
 
   destroy: ->
@@ -22,13 +23,15 @@ class HbFormat
 
   formatCurrentBuffer: ->
     editor = atom?.workspace?.getActiveTextEditor()
-    return unless @dispatch?.isValidEditor(editor)
+    console.log 'editor current buffer', editor
+    return unless @dispatch.isValidEditor(editor)
     @reset editor
     done = (err, messages) =>
       @dispatch.resetAndDisplayMessages(editor, messages)
     @formatBuffer(editor, false, done)
 
   formatBuffer: (editor, saving, callback = ->) ->
+    console.log 'format buffer'
     unless @dispatch.isValidEditor(editor)
       @emit @name + '-complete', editor, saving
       callback(null)

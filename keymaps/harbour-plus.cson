@@ -1,5 +1,4 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/advanced/keymaps
-'.atom-text-editor':
+'atom-text-editor[data-grammar="source harbour"]:not(.mini)':
   'ctrl-alt-c': 'harbourlang:hbformat'
-#  'ctrl-alt-shift-c': 'harbourlang:cleargocover'

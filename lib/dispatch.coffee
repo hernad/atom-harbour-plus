@@ -1,9 +1,9 @@
-{Subscriber, Emitter} = require 'emissary'
-HbFormat = require './hbformat'
-Executor = require './executor'
-Environment = require './environment'
-HarbourExecutable = require './harbourexecutable'
-SplicerSplitter = require './util/splicersplitter'
+{Subscriber, Emitter} = require('emissary')
+HbFormat = require('./hbformat')
+Executor = require ('./executor')
+Environment = require('./environment')
+HarbourExecutable = require('./harbourexecutable')
+SplicerSplitter = require('./util/splicersplitter')
 
 _ = require 'underscore-plus'
 {MessagePanelView, LineMessageView, PlainMessageView} = require 'atom-message-panel'
@@ -23,16 +23,19 @@ class Dispatch
     @dispatching = false
     @ready = false
     @messages = []
+    @items = []
 
+    console.log 'dispatch constructor'
     @environment = new Environment(process.env)
     @executor = new Executor(@environment.Clone())
     @splicersplitter = new SplicerSplitter()
     @harbourexecutable = new HarbourExecutable(@env())
 
     @hbformat = new HbFormat(this)
-    @messagepanel = new MessagePanelView title: '<span class="icon-diff-added"></span> harbour-plus', rawTitle: true unless @messagepanel?
+    @messagepanel = new MessagePanelView({title: '<span class="icon-diff-added"></span> harbour-plus', rawTitle: true}) unless @messagepanel?
 
     @on 'run-detect', => @detect()
+
 
     # Reset State If Requested
     hbformatsubscription = @hbformat.on 'reset', (editor) => @resetState(editor)
@@ -55,10 +58,25 @@ class Dispatch
     @activated = false
     @emit 'destroyed'
 
+  addItem: (item) ->
+    return if item in @items
+    if typeof item.on is 'function'
+      @subscribe(item, 'destroyed', => @removeItem(item))
+    @items.splice(0, 0, item)
+
+  removeItem: (item) ->
+    index = @items.indexOf(item)
+    return if index is -1
+    if typeof item.on is 'function'
+      @unsubscribe(item)
+    @items.splice(index, 1)
+
   subscribeToAtomEvents: =>
-    @editorSubscription = atom.workspace.observeTextEditors (editor) => @handleEvents(editor)
-    #@workspaceViewSubscription = atom.workspace.on 'pane-container:active-pane-item-changed', => @resetPanel()
-    @activated = true
+    @addItem(atom.workspace.observeTextEditors((editor) => @handleEvents(editor)))
+    @addItem(atom.workspace.onDidChangeActivePaneItem((event) => @resetPanel()))
+    @addItem(atom.config.observe('harbour-plus.harbourExe', => @displayHarbourInfo(true) if @ready))
+    atom.commands.add 'atom-workspace',
+      'harbourlang:harbourinfo': => @displayHarbourInfo(true) if @ready
 
 
   handleEvents: (editor) =>
@@ -69,12 +87,12 @@ class Dispatch
       return unless @activated
       @handleBufferChanged(editor)
 
-    savedsubscription = buffer.on 'saved', =>
+    savedsubscription = buffer.onDidSave =>
       return unless @activated
       return unless not @dispatching
       @handleBufferSave(editor, true)
 
-    destroyedsubscription = buffer.once 'destroyed', =>
+    destroyedsubscription = buffer.onDidDestroy =>
       savedsubscription?.off()
       modifiedsubscription?.off()
 
@@ -92,7 +110,8 @@ class Dispatch
     @harbourexecutable.detect()
 
   resetAndDisplayMessages: (editor, msgs) =>
-    return unless @isValidEditor?(editor?)
+    console.log 'reset and display messages', editor, msgs
+    return unless @isValidEditor(editor)
     @resetState?(editor?)
     @collectMessages?(msgs?)
     @displayMessages?(editor?)
@@ -108,17 +127,21 @@ class Dispatch
     @emit 'ready'
 
   displayHarbourInfo: (force) =>
+    @messagepanel.add new PlainMessageView message: 'test', className: 'text-success'
+    @messagepanel.attach()
+    
     editor = atom.workspace?.getActiveTextEditor()
     unless force
-      return @isValidEditor(editor)
+      return unless @isValidEditor(editor)
 
     @resetPanel()
     harbour = @harbourexecutable.current()
+    console.log 'harbour current', harbour
     if harbour? and harbour.executable? and harbour.executable.trim() isnt ''
       @messagepanel.add new PlainMessageView message: 'Using Harbour: ' + harbour.name + ' (@' + harbour.executable + ')', className: 'text-success'
 
       # hbformat
-      if harbour.hbformat()? and go.hbformat() isnt false
+      if harbour.hbformat()? and harbour.hbformat() isnt false
         @messagepanel.add new PlainMessageView message: 'Format Tool: ' + harbour.hbformat(), className: 'text-success'
       else
         @messagepanel.add new PlainMessageView message: 'Format Tool (hbformat): Not Found', className: 'text-error' unless atom.config.get('harbour-plus.formatWithHarbourImports')
@@ -240,7 +263,10 @@ class Dispatch
     @messagepanel.attach() if atom?.workspace?
 
   isValidEditor: (editor) ->
-    editor?.getGrammar()?.scopeName is 'source.harbour'
+    #console.log 'isvalid editor var:', editor
+    if typeof editor isnt 'TextEditor' then return true
+    editor.getGrammar().scopeName is 'source.harbour'
+
 
   env: ->
     @environment.Clone()

@@ -4,7 +4,8 @@
     'submenu': [
       'label': 'Harbour Plus'
       'submenu': [
-        { 'label': 'Display Harbour Information', 'command': 'harbour:harbourinfo' }
+        { 'label': 'Display Harbour Information', 'command': 'harbourlang:harbourinfo' }
+        { 'label': 'Format harbour file', 'command': 'harbourlang:hbformat' }
       ]
     ]
   }

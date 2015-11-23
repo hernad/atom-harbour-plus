@@ -20,7 +20,6 @@ class Harbour
     @version = options.version if options?.version?
     @hbroot = options.hbroot if options?.hbroot?
 
-
   description: ->
     return @name? + ' (@ ' + @hbroot? + ')'
 
