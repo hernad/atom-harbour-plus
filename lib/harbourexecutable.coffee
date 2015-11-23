@@ -112,7 +112,9 @@ class HarbourExecutable
       outercallback(err, harbour)
     )
     # console.log( "introspect HB_ROOT", process.env.HB_ROOT )
-    harbour.hbroot = process.env.HB_ROOT
+    hbroot = process.env.HB_ROOT
+    hbroot = '' if not hbroot?
+    harbour.hbroot = hbroot
 
 
   current: =>
