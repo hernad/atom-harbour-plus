@@ -117,10 +117,11 @@ class Dispatch
 
   resetAndDisplayMessages: (editor, msgs) =>
     # console.log 'reset and display messages', editor, msgs
-    return unless @isValidEditor(editor)
-    @resetState?(editor?)
-    @collectMessages?(msgs?)
-    @displayMessages?(editor?)
+    #return unless @isValidEditor(editor)
+    console.log 'reset and display messages:', msgs
+    @resetState?(editor)
+    @collectMessages(msgs)
+    @displayMessages?(editor)
 
   displayMessages: (editor) =>
     @updatePane(editor?, @messages)
@@ -174,6 +175,7 @@ class Dispatch
 
 
   collectMessages: (messages) ->
+    console.log 'input messages for collect', messages
     messages = _.flatten(messages) if messages? and _.size(messages) > 0
     messages = _.filter messages, (element, index, list) ->
       return element?
@@ -182,6 +184,7 @@ class Dispatch
     @messages = _.union(@messages, messages)
     @messages = _.uniq @messages, (element, index, list) ->
       return element?.line + ':' + element?.column + ':' + element?.msg
+    console.log "collected messages:", @messages
     @emit 'messages-collected', _.size(@messages)
 
   triggerPipeline: (editor, saving) ->
@@ -197,6 +200,7 @@ class Dispatch
       (callback) =>
         @hbformat.formatBuffer(editor, saving, callback)
      ], (err, modifymessages) =>
+       console.log 'trace 155'
        @collectMessages(modifymessages)
        @emit 'dispatch-complete', editor
     )

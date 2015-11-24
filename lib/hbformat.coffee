@@ -2,6 +2,7 @@
 {Subscriber, Emitter} = require ('emissary')
 _ = require ('underscore-plus')
 path = require ('path')
+{exec, tempFile} = helpers = require('atom-linter')
 {MessagePanelView, LineMessageView, PlainMessageView} =
   require 'atom-message-panel'
 
@@ -76,8 +77,7 @@ class HbFormat
       return
     done = (exitcode, stdout, stderr, messages) =>
       console.log "done callback:", @name, 'stdout: ', stdout, 'stderr:', stderr
-      messages = @mapMessages(editor, stderr, cwd) \
-       if stderr? and stderr.trim() isnt ''
+      messages = @mapMessages(editor, stderr, cwd)
       # emituje se hbformat-complete event
       @emit @name + '-complete', editor, saving
       @dispatch.resetPanel()
@@ -88,32 +88,16 @@ class HbFormat
     @dispatch.messagepanel.attach()
     @dispatch.executor.exec(cmd, cwd, @dispatch?.env(), done, args)
 
-  mapMessages: (editor, data, cwd) =>
-    pattern = /^(.*?):(\d*?):((\d*?):)?\s(.*)$/img
+  mapMessages: (editor, data, cwd) ->
+    console.log 'map error messages:', data
+    # <...Error 3 on line 1924: END PRITN
+    regex = /Error (\d+) on line (\d+)\: (.*)/g
     messages = []
-    return messages unless data? and data isnt ''
-    extract = (matchLine) =>
-      return unless matchLine?
-      file = if matchLine[1]? and matchLine[1] isnt '' \
-        then matchLine[1] else null
-      message = switch
-        when matchLine[4]?
-          file: file
-          line: matchLine[2]
-          column: matchLine[4]
-          msg: matchLine[5]
-          type: 'error'
-          source: @name
-        else
-          file: file
-          line: matchLine[2]
-          column: false
-          msg: matchLine[5]
-          type: 'error'
-          source: @name
-      messages.push message
-    loop
-      match = pattern.exec(data)
-      extract(match)
-      break unless match?
-    return messages
+    while((match = regex.exec(data)) isnt null)
+      messages.push
+        type: 'error'
+        file: editor.getPath()
+        line: match[2]
+        column: "1"
+        msg: match[1] + ': ' + match[3]
+    messages
