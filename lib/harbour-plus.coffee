@@ -1,7 +1,6 @@
 {CompositeDisposable} = require 'atom'
 helpers = require('atom-linter')
 
-
 module.exports =
   config:
     environmentOverridesConfiguration:

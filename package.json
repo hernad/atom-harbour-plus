@@ -26,6 +26,7 @@
   "dependencies": {
     "async": ">=0.9.0",
     "atom-linter": "*",
+    "atom-package-deps": "*",
     "atom-message-panel": ">=1.1.1",
     "emissary": ">=1.x",
     "fs-plus": ">=2.x",
