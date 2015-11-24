@@ -52,7 +52,7 @@ module.exports =
           atom.notifications.addError(title, {detail: message})
           @harbourFormatExe = ''
       .catch (e) ->
-        console.log e
+        #console.log e
         atom.notifications.addError(title, {detail: message})
 
   activate: (state) ->
