@@ -1,3 +1,4 @@
+{CompositeDisposable} = require 'atom'
 helpers = require('atom-linter')
 
 
@@ -56,7 +57,8 @@ module.exports =
         atom.notifications.addError(title, {detail: message})
 
   activate: (state) ->
-
+    require('atom-package-deps').install()
+    @subscriptions = new CompositeDisposable
     @subscriptions.add atom.config.observe 'harbour-plus.harbourFormatExe',
       (exePath) =>
         @harbourFormatExe = exePath
