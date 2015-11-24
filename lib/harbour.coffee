@@ -30,14 +30,18 @@ class Harbour
 
   hbformat: ->
     result = atom.config.get('harbour-plus.harbourFormatExe')
+
     if result? and result isnt ''
+      if not path.isAbsolute @harbourFormatExe
+        @harbourFormatExe = path.resolve @harbourFormatExe
+        console.log "path resolve", @harbourFormatExe
       #console.log "hbformat defined", result
       return false unless fs.existsSync(result)
       return result
 
     # confg not defined, path based ond HB_ROOT
     if @hbroot? and @hbroot isnt ''
-       result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
-       #console.log "hbformat exec? :", result
-       return false unless fs.existsSync(result)
-       return result
+      result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
+      #console.log "hbformat exec? :", result
+      return false unless fs.existsSync(result)
+      return result

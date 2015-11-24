@@ -89,7 +89,8 @@ class Dispatch
     buffer = editor?.getBuffer()
     return unless buffer?
     @updateGutter(editor, @messages)
-    modifiedsubscription = buffer.on 'contents-modified', =>
+
+    modifiedsubscription = buffer.onDidStopChanging ->
       return unless @activated
       @handleBufferChanged(editor)
 
