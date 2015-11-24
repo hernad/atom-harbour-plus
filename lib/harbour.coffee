@@ -2,6 +2,7 @@ fs = require 'fs-plus'
 path = require 'path'
 os = require 'os'
 _ = require 'underscore-plus'
+ExePath = require('./util/exepath').ExePath
 
 module.exports =
 class Harbour
@@ -10,14 +11,16 @@ class Harbour
   version: ''
   hbroot: '' # env's HB_ROOT
   env: false # Copy of the environment
+  exePath: null
 
-  constructor: (@executable, @pathexpander, options) ->
+  constructor: (@executable, options) ->
     @name = options.name if options?.name?
     if os.platform() is 'win32'
       #console.log( "win32 exe" )
       @exe = ".exe"
     @version = options.version if options?.version?
     @hbroot = options.hbroot if options?.hbroot?
+    @exePath = new ExePath()
 
   description: ->
     return @name? + ' (@ ' + @hbroot? + ')'
@@ -29,19 +32,13 @@ class Harbour
     return fs.realpathSync(@executable)
 
   hbformat: ->
-    result = atom.config.get('harbour-plus.harbourFormatExe')
-
-    if result? and result isnt ''
-      if not path.isAbsolute @harbourFormatExe
-        @harbourFormatExe = path.resolve @harbourFormatExe
-        console.log "path resolve", @harbourFormatExe
-      #console.log "hbformat defined", result
-      return false unless fs.existsSync(result)
-      return result
+    exe = atom.config.get('harbour-plus.harbourFormatExe')
+    exe = @exePath.full(exe)
+    return exe unless exe isnt false
 
     # confg not defined, path based ond HB_ROOT
     if @hbroot? and @hbroot isnt ''
       result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
       #console.log "hbformat exec? :", result
-      return false unless fs.existsSync(result)
-      return result
+      return false unless fs.existsSync(exe)
+      return exe

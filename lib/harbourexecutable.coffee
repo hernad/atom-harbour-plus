@@ -5,7 +5,6 @@ os = require 'os'
 Harbour = require './harbour'
 _ = require 'underscore-plus'
 Executor = require './executor'
-PathExpander = require './util/pathexpander'
 {Subscriber, Emitter} = require 'emissary'
 
 module.exports =
@@ -17,12 +16,10 @@ class HarbourExecutable
     @harbours = []
     @currentharbour = ''
     @executor = new Executor(@env)
-    @pathexpander = new PathExpander(@env)
 
   destroy: ->
     @unsubscribe()
     @executor = null
-    @pathexpander = null
     @harbours = []
     @currentharbour = ''
     @reset()
@@ -85,7 +82,7 @@ class HarbourExecutable
 
   introspect: (executable, outercallback) =>
     absoluteExecutable = path.resolve(executable)
-    harbour = new Harbour(absoluteExecutable, @pathexpander)
+    harbour = new Harbour(absoluteExecutable)
     async.series([
       (callback) =>
         # done object
