@@ -133,19 +133,7 @@ class Dispatch
     @emit 'ready'
 
   displayHarbourInfo: (force) =>
-    console.log "debug harbour-plus"
-    messages = new MessagePanelView
-      title: 'Remember your Coffee!'
-    messages.attach()
-    messages.add new LineMessageView
-      line: 1
-      character: 4
-      message: 'You haven\'t had a single drop of coffee since this character'
-
-    @messagepanel.add new PlainMessageView
-      message: 'test', className: 'text-success'
-    @messagepanel.attach()
-
+    #console.log "display harbour info"
     editor = atom.workspace?.getActiveTextEditor()
     unless force
       return unless @isValidEditor(editor)
@@ -154,9 +142,10 @@ class Dispatch
     harbour = @harbourexecutable.current()
     # console.log 'harbour current', harbour
     if harbour? and harbour.executable? and harbour.executable.trim() isnt ''
+      msg = 'Using Harbour: ' + harbour.name + ' (@' + harbour.executable + ')'
+      #console.log msg
       @messagepanel.add new PlainMessageView
-        message: 'Using Harbour: ' + harbour.name + ' (@' +
-          harbour.executable + ')', className: 'text-success'
+        message: msg, className: 'text-success'
 
       # hbformat
       if harbour.hbformat()? and harbour.hbformat() isnt false
@@ -182,7 +171,6 @@ class Dispatch
         message: 'No Harbour Installations Were Found', className: 'text-error'
 
     @messagepanel.attach()
-    @resetPanel()
 
 
   collectMessages: (messages) ->
