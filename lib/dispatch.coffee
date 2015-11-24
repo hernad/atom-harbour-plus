@@ -82,7 +82,7 @@ class Dispatch
     @addItem(atom.config.observe('harbour-plus.harbourExe', =>
       @displayHarbourInfo(true) if @ready))
     atom.commands.add 'atom-workspace',
-      'harbourlang:harbourinfo': => @displayHarbourInfo(true) if @ready
+      'harbourlang:hbinfo': => @displayHarbourInfo(true)
 
 
   handleEvents: (editor) =>
@@ -133,6 +133,15 @@ class Dispatch
     @emit 'ready'
 
   displayHarbourInfo: (force) =>
+    console.log "debug harbour-plus"
+    messages = new MessagePanelView
+      title: 'Remember your Coffee!'
+    messages.attach()
+    messages.add new LineMessageView
+      line: 1
+      character: 4
+      message: 'You haven\'t had a single drop of coffee since this character'
+
     @messagepanel.add new PlainMessageView
       message: 'test', className: 'text-success'
     @messagepanel.attach()
