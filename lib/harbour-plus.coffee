@@ -17,13 +17,13 @@ module.exports =
       order: 2
     harbourFormatExe:
       title: 'EXE hbformat'
-      description: 'c:\harbour\bin\hbformat.exe or /opt/harbour/bin/hbformat'
-      default: ''
+      description: 'c:\\harbour\\bin\\hbformat.exe or /opt/harbour/bin/hbformat'
+      default: 'hbformat'
       type: 'string'
       order: 3
     harbourExe:
       title: 'EXE harbour'
-      description: 'e.g. c:\harbour\bin\harbour.exe or /opt/harbour/bin/harbour'
+      description: 'e.g. c:\\harbour\\bin\\harbour.exe or /opt/harbour/bin/harbour'
       default: ''
       type: 'string'
       order: 4
