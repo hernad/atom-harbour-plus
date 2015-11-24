@@ -14,7 +14,7 @@ class Harbour
   constructor: (@executable, @pathexpander, options) ->
     @name = options.name if options?.name?
     if os.platform() is 'win32'
-      console.log( "win32 exe" )
+      #console.log( "win32 exe" )
       @exe = ".exe"
     @version = options.version if options?.version?
     @hbroot = options.hbroot if options?.hbroot?
@@ -36,8 +36,8 @@ class Harbour
       return result
 
     # confg not defined, path based ond HB_ROOT
-    return false unless @hbroot? and @hbroot isnt ''
-    result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
-    #console.log "hbformat exec? :", result
-    return false unless fs.existsSync(result)
-    return fs.realpathSync(result)
+    if @hbroot? and @hbroot isnt ''
+       result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
+       #console.log "hbformat exec? :", result
+       return false unless fs.existsSync(result)
+       return result

@@ -2,6 +2,8 @@
 {Subscriber, Emitter} = require ('emissary')
 _ = require ('underscore-plus')
 path = require ('path')
+{MessagePanelView, LineMessageView, PlainMessageView} =
+  require 'atom-message-panel'
 
 module.exports =
 class HbFormat
@@ -52,12 +54,11 @@ class HbFormat
     configArgs = @dispatch.splicersplitter.splitAndSquashToArray(' ', \
       atom.config.get('harbour-plus.hbformatArgs'))
     args = _.union(args, configArgs) if configArgs? and _.size(configArgs) > 0
+
     # hbformat bug fix
-    # hbformat /Users/hernad/github/harbour-plus/test.prg ne radi ?!
-    # zato sam odsjekao path tako da dobijem
-    # currentFile = test.prg
-    # Na svu srecu imam cwd komandu koja me pozicionira u tekuci direktorij,
-    # u ovom slucaju /Users/hernad/github/harbour-plus
+    # hbformat <full path> eg /Users/hernad/github/harbour-plus/test.prg
+    # DON'T WORK, we need:
+    # hbformat test.prg
     currentFile = buffer.getPath().split('\\').pop().split('/').pop()
     args = _.union(args, [currentFile])
     harbour = @dispatch.harbourexecutable.current()
@@ -74,13 +75,17 @@ class HbFormat
       callback(null, [message])
       return
     done = (exitcode, stdout, stderr, messages) =>
-      #console.log @name + ' - stdout: ' + stdout \
-      # if stdout? and stdout.trim() isnt ''
+      console.log "done callback:", @name, 'stdout: ', stdout, 'stderr:', stderr
       messages = @mapMessages(editor, stderr, cwd) \
        if stderr? and stderr.trim() isnt ''
       # emituje se hbformat-complete event
       @emit @name + '-complete', editor, saving
+      @dispatch.resetPanel()
       callback(null, messages)
+
+    @dispatch.messagepanel.add new PlainMessageView
+      message: 'formatting ' + currentFile, className: 'text-success'
+    @dispatch.messagepanel.attach()
     @dispatch.executor.exec(cmd, cwd, @dispatch?.env(), done, args)
 
   mapMessages: (editor, data, cwd) =>
