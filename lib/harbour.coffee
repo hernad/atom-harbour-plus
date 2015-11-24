@@ -16,7 +16,6 @@ class Harbour
     if os.platform() is 'win32'
       console.log( "win32 exe" )
       @exe = ".exe"
-
     @version = options.version if options?.version?
     @hbroot = options.hbroot if options?.hbroot?
 
@@ -33,8 +32,10 @@ class Harbour
     result = atom.config.get('harbour-plus.harbourFormatExe')
     if result? and result isnt ''
       #console.log "hbformat defined", result
+      return false unless fs.existsSync(result)
       return result
-    #console.log "hbroot", @hbroot
+
+    # confg not defined, path based ond HB_ROOT
     return false unless @hbroot? and @hbroot isnt ''
     result = path.join(@hbroot, 'bin', 'hbformat' + @exe)
     #console.log "hbformat exec? :", result

@@ -40,7 +40,6 @@ class Dispatch
 
     @on 'run-detect', => @detect()
 
-
     # Reset State If Requested
     hbformatsubscription = @hbformat.on 'reset', (editor) => @resetState(editor)
 

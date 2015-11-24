@@ -1,3 +1,6 @@
+helpers = require('atom-linter')
+
+
 module.exports =
   config:
     environmentOverridesConfiguration:
@@ -37,8 +40,27 @@ module.exports =
       type: 'boolean'
       order: 6
 
+  _testHbFormatBin: ->
+    title = 'Unable to run hbformat'
+    message = 'Unable run "' + @harbourFormatExe +
+      '", please verify this file path.'
+    try
+      helpers.exec(@harbourFormatExe, []).then (output) =>
+        # Harbour 3.2.0dev (r1408271619)
+        regex = /Harbour Source Formatter/g
+        if not regex.exec(output)
+          atom.notifications.addError(title, {detail: message})
+          @harbourFormatExe = ''
+      .catch (e) ->
+        console.log e
+        atom.notifications.addError(title, {detail: message})
 
   activate: (state) ->
+
+    @subscriptions.add atom.config.observe 'harbour-plus.harbourFormatExe',
+      (exePath) =>
+        @harbourFormatExe = exePath
+        @_testHbFormatBin()
     @dispatch = @createDispatch()
 
   deactivate: ->
@@ -47,5 +69,5 @@ module.exports =
 
   createDispatch: ->
     unless @dispatch?
-      Dispatch = require './dispatch'
+      Dispatch = require('./dispatch')
       @dispatch = new Dispatch()

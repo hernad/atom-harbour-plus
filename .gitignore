@@ -34,3 +34,4 @@ spec/tools/env/env_openbsd_386
 spec/tools/env/env_openbsd_amd64
 spec/tools/env/env_plan9_386
 spec/tools/env/env_windows_386.exe
+tags
