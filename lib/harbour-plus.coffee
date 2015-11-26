@@ -1,5 +1,6 @@
 {CompositeDisposable} = require 'atom'
 helpers = require('atom-linter')
+ExePath = require('./util/exepath')
 
 module.exports =
   config:
@@ -24,7 +25,7 @@ module.exports =
     harbourExe:
       title: 'EXE harbour'
       description: 'e.g. c:\\harbour\\bin\\harbour.exe or /opt/harbour/bin/harbour'
-      default: ''
+      default: 'harbour'
       type: 'string'
       order: 4
     showPanel:
@@ -40,17 +41,24 @@ module.exports =
       type: 'boolean'
       order: 6
 
-  _testHbFormatBin: ->
+  _testBin: (exe) ->
     title = 'Unable to run hbformat'
-    message = 'Unable run "' + @harbourFormatExe +
+    message = 'Unable run "' + exe +
       '", please verify this file path.'
     try
-      helpers.exec(@harbourFormatExe, []).then (output) =>
+      exePath = new ExePath()
+      result = exePath.full(exe)
+      if result is ''
+        atom.notifications.addError(title, {detail: message})
+        return ''
+
+      helpers.exec(result, []).then (output) =>
         # Harbour 3.2.0dev (r1408271619)
         regex = /Harbour Source Formatter/g
         if not regex.exec(output)
           atom.notifications.addError(title, {detail: message})
-          @harbourFormatExe = ''
+          return ''
+        return result
       .catch (e) ->
         #console.log e
         atom.notifications.addError(title, {detail: message})
@@ -60,8 +68,7 @@ module.exports =
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.config.observe 'harbour-plus.harbourFormatExe',
       (exePath) =>
-        @harbourFormatExe = exePath
-        @_testHbFormatBin()
+        @harbourFormatExe = @_testBin(exePath)
     @dispatch = @createDispatch()
 
   deactivate: ->

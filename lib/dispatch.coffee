@@ -2,7 +2,7 @@
 HbFormat = require('./hbformat')
 Executor = require ('./executor')
 Environment = require('./environment')
-HarbourExecutable = require('./harbourexecutable')
+Harbour = require('./harbour')
 SplicerSplitter = require('./util/splicersplitter')
 
 _ = require 'underscore-plus'
@@ -28,9 +28,13 @@ class Dispatch
 
     #console.log 'dispatch constructor'
     @environment = new Environment(process.env)
+    @harbour = new Harbour()
+    console.log "harbour exe:", @harbour.harbour(), \
+     "hbformat exe:", @harbour.hbformat()
+     
     @executor = new Executor(@environment.Clone())
     @splicersplitter = new SplicerSplitter()
-    @harbourexecutable = new HarbourExecutable(@env())
+
 
     @hbformat = new HbFormat(this)
     @messagepanel =
@@ -38,7 +42,6 @@ class Dispatch
        {title: '<span class="icon-diff-added"></span> harbour-plus',
        rawTitle: true}) unless @messagepanel?
 
-    @on 'run-detect', => @detect()
 
     # Reset State If Requested
     hbformatsubscription = @hbformat.on 'reset', (editor) => @resetState(editor)
@@ -47,7 +50,6 @@ class Dispatch
 
     @on 'dispatch-complete', (editor) => @displayMessages(editor)
     @subscribeToAtomEvents()
-    @emit 'run-detect'
 
   destroy: =>
     @unsubscribeFromAtomEvents()
@@ -110,11 +112,6 @@ class Dispatch
   unsubscribeFromAtomEvents: =>
     @editorSubscription?.off()
 
-  detect: =>
-    @ready = false
-    @harbourexecutable.once 'detect-complete', =>
-      @emitReady()
-    @harbourexecutable.detect()
 
   resetAndDisplayMessages: (editor, msgs) =>
     # console.log 'reset and display messages', editor, msgs
@@ -141,10 +138,9 @@ class Dispatch
       return unless @isValidEditor(editor)
 
     @resetPanel()
-    harbour = @harbourexecutable.current()
-    # console.log 'harbour current', harbour
-    if harbour? and harbour.executable? and harbour.executable.trim() isnt ''
-      msg = 'Using Harbour: ' + harbour.name + ' (@' + harbour.executable + ')'
+    harbour = @harbour
+    if harbour?
+      msg = 'Using Harbour: ' + harbour.harbour()
       #console.log msg
       @messagepanel.add new PlainMessageView
         message: msg, className: 'text-success'
@@ -190,7 +186,7 @@ class Dispatch
 
   triggerPipeline: (editor, saving) ->
     @dispatching = true
-    harbour = @harbourexecutable.current()
+    harbour = @harbourex.harbour()
     unless harbour? and harbour.executable? and
     harbour.executable.trim() isnt ''
       @displayHarbourInfo(false)

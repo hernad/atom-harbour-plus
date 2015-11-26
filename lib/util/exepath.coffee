@@ -8,12 +8,12 @@ class ExePath
     if exe? and exe isnt ''
       if not path.isAbsolute exe
         for dir in process.env.PATH.split(path.delimiter)
-          f = path.join(dir, exe)
-          console.log "f exe:", f
-          if fs.existsSync(f)
-            return f
-        return false
+          file = path.join(dir, exe)
+          console.log "file exe:", file
+          if fs.existsSync(file)
+            return file
+        return ''
     else
       #console.log "hbformat defined", result
-      return false unless fs.existsSync(exe)
+      return '' unless fs.existsSync(exe)
       return exe
