@@ -76,7 +76,7 @@ class HbFormat
       callback(null, [message])
       return
     done = (exitcode, stdout, stderr, messages) =>
-      console.log "done callback:", @name, 'stdout: ', stdout, 'stderr:', stderr
+      #console.log "done callback:", @name, 'stdout: ', stdout, 'stderr:', stderr
       messages = @mapMessages(editor, stderr, cwd)
       # emituje se hbformat-complete event
       @emit @name + '-complete', editor, saving
@@ -89,7 +89,7 @@ class HbFormat
     @dispatch.executor.exec(cmd, cwd, @dispatch?.env(), done, args)
 
   mapMessages: (editor, data, cwd) ->
-    console.log 'map error messages:', data
+    #console.log 'map error messages:', data
     # <...Error 3 on line 1924: END PRITN
     regex = /Error (\d+) on line (\d+)\: (.*)/g
     messages = []
