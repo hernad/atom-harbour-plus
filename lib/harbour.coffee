@@ -26,9 +26,9 @@ class Harbour
 
   harbour: ->
     exe = atom.config.get('harbour-plus.harbourExe')
-    console.log "harbour exe from config: ", exe
+    # console.log "harbour exe from config: ", exe
     exe = @exepath.full(exe)
-    console.log "harbour exe with exepath: ", exe
+    # console.log "harbour exe with exepath: ", exe
     return exe
 
     # confg not defined, path based ond HB_ROOT

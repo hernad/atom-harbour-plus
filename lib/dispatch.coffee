@@ -29,9 +29,9 @@ class Dispatch
     #console.log 'dispatch constructor'
     @environment = new Environment(process.env)
     @harbour = new Harbour()
-    console.log "harbour exe:", @harbour.harbour(), \
-     "hbformat exe:", @harbour.hbformat()
-     
+    # console.log "harbour exe:", @harbour.harbour(), \
+    # "hbformat exe:", @harbour.hbformat()
+
     @executor = new Executor(@environment.Clone())
     @splicersplitter = new SplicerSplitter()
 
