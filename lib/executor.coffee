@@ -11,6 +11,7 @@ class Executor
       cwd: null
       env: null
       encoding: 'utf8'
+    console.log 'execSync command:', command
     options.cwd = fs.realpathSync(cwd) if cwd? and cwd isnt '' and\
      cwd isnt false and fs.existsSync(cwd)
     options.env = if env? then env else @environment
@@ -41,6 +42,7 @@ class Executor
     options =
       cwd: null
       env: null
+    console.log 'Executor exec:', command
     options.cwd = fs.realpathSync(cwd) if cwd? and cwd isnt '' and\
      cwd isnt false and fs.existsSync(cwd)
     options.env = if env? then env else @environment

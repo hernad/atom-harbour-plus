@@ -62,9 +62,8 @@ class HbFormat
     # hbformat test.prg
     currentFile = buffer.getPath().split('\\').pop().split('/').pop()
     args = _.union(args, [currentFile])
-    harbour = @dispatch.harbourexecutable.current()
     # console.log( "formatBuffer args:", args)
-    cmd = harbour.hbformat()
+    cmd = @dispatch.harbour.hbformat()
     # console.log( "hbformat cmd:", cmd )
     if cmd is false
       message =
