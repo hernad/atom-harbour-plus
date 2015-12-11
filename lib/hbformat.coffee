@@ -28,7 +28,7 @@ class HbFormat
     editor = atom?.workspace?.getActiveTextEditor()
     editor.save()
     #console.log 'editor current buffer', editor
-    return unless @dispatch.isValidEditor(editor)
+    return unless @dispatch?.isValidEditor(editor)
     @reset editor
     done = (err, messages) =>
       @dispatch.resetAndDisplayMessages(editor, messages)
