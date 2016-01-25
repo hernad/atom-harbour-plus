@@ -42,6 +42,17 @@ class Executor
     options =
       cwd: null
       env: null
+
+    if not command
+      e = new Error('dummy')
+      stack = e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+      .replace(/^\s+at\s+/gm, '')
+      .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@')
+      atom.notifications.addError("Executor.exec undefined command", {detail: stack})
+      console.log stack
+      return
+
+
     # console.log 'Executor exec:', command
     options.cwd = fs.realpathSync(cwd) if cwd? and cwd isnt '' and\
      cwd isnt false and fs.existsSync(cwd)
@@ -64,7 +75,7 @@ class Executor
       code = data
       callback(code, output, error, messages)
     args = [] unless args?
-    # console.log( "Executor.exec:", command, args, options )
+    console.log( "Executor.exec:", command, args, options )
     bufferedprocess =
       new BufferedProcess({command, args, options, stdout, stderr, exit})
     bufferedprocess.process.once 'error', (err) ->
