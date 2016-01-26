@@ -75,19 +75,22 @@ class Executor
       code = data
       callback(code, output, error, messages)
     args = [] unless args?
-    console.log( "Executor.exec:", command, args, options )
-    bufferedprocess =
-      new BufferedProcess({command, args, options, stdout, stderr, exit})
-    bufferedprocess.process.once 'error', (err) ->
-      if err.code is 'ENOENT'
-        message =
+    #console.log( "Executor.exec:", command, args, options )
+    try
+      bufferedprocess =
+        new BufferedProcess({command, args, options, stdout, stderr, exit})
+      bufferedprocess.process.once 'error', (err) ->
+        if err.code is 'ENOENT'
+          message =
             line: false
             column: false
             msg: 'No file or directory: [' + command + ']'
             type: 'error'
             source: 'executor'
-        messages.push message
-      else
-        console.log err
+          messages.push message
+        else
+          console.log err
+    catch e
+      console.log "bufferredprocess", e
 
-      callback(127, output, error, messages)
+    callback(127, output, error, messages)

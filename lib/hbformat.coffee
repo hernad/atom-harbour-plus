@@ -5,6 +5,8 @@ path = require ('path')
 {exec, tempFile} = helpers = require('atom-linter')
 {MessagePanelView, LineMessageView, PlainMessageView} =
   require 'atom-message-panel'
+{CompositeDisposable} = require('atom')
+fs = require 'fs-plus'
 
 module.exports =
 class HbFormat
@@ -16,9 +18,12 @@ class HbFormat
       'harbourlang:hbformat': => @formatCurrentBuffer()
     @dispatch = dispatch
     @name = 'hbformat'
+    @filePath = null
+    @subEdit = new CompositeDisposable
 
   destroy: ->
     @unsubscribe()
+    @subEdit.dispose()
     @dispatch = null
 
   reset: (editor) ->
@@ -26,7 +31,10 @@ class HbFormat
 
   formatCurrentBuffer: ->
     editor = atom?.workspace?.getActiveTextEditor()
-    editor.save()
+    try
+      editor.save()
+    catch e
+      console.log "editor.save", e
     #console.log 'editor current buffer', editor
     return unless @dispatch?.isValidEditor(editor)
     @reset editor
@@ -49,7 +57,8 @@ class HbFormat
       @emit @name + '-complete', editor, saving
       callback(null)
       return
-    cwd = path.dirname(buffer.getPath())
+    @filePath = buffer.getPath()
+    cwd = path.dirname(@filePath)
     # console.log( "cwd:", cwd)
     args = []
     configArgs = @dispatch.splicersplitter.splitAndSquashToArray(' ', \
@@ -80,11 +89,19 @@ class HbFormat
       # emituje se hbformat-complete event
       @emit @name + '-complete', editor, saving
       @dispatch.resetPanel()
+      buffer.setPath(@filePath)
+      editor.setText fs.readFileSync(@filePath, encoding: buffer.getEncoding())
       callback(null, messages)
 
     @dispatch.messagepanel.add new PlainMessageView
       message: 'formatting ' + currentFile, className: 'text-success'
     @dispatch.messagepanel.attach()
+    #buffer.setPath('hbformat-test')
+
+    #@subEdit.add editor.onDidChange (change) =>
+    #  for n in [1..5]
+    #   console.log "editor onDidChange", change, n
+
     @dispatch.executor.exec(cmd, cwd, @dispatch?.env(), done, args)
 
   mapMessages: (editor, data, cwd) ->
