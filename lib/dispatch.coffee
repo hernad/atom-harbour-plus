@@ -102,8 +102,8 @@ class Dispatch
       @handleBufferSave(editor, true)
 
     destroyedsubscription = buffer.onDidDestroy ->
-      savedsubscription?.off()
-      modifiedsubscription?.off()
+      #savedsubscription?.off()
+      #modifiedsubscription?.off()
 
     @subscribe(modifiedsubscription)
     @subscribe(savedsubscription)
